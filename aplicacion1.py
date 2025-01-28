@@ -1,7 +1,7 @@
+import streamlit as st
+from PIL import Image
+from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
-import streamlit as st
-from PIL import Image
-from tensorflow.keras.preprocessing.image import img_to_array
 
 def preprocess_image(image):
   image = image.convert('L') # convertir a escala de grises
@@ -30,8 +30,7 @@ def main():
   st.title("Clasificación de la base de datos MNIST")
   st.markdown("Sube una imagen para clasificar")
 
-  uploaded_file = st.file_uploader("S
-elecciona una imagen (PNG, JPG, JPEG:)", type = ["jpg", "png", "jpeg"])
+  uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG:)", type = ["jpg", "png", "jpeg"])
 
   if uploaded_file is not None:
     image = Image.open(uploaded_file)
@@ -40,6 +39,9 @@ elecciona una imagen (PNG, JPG, JPEG:)", type = ["jpg", "png", "jpeg"])
     preprocessed_image = preprocess_image(image)
     
     st.image(preprocessed_image, caption = "imagen subida")
+
+    if st.button("Clasificar imagen"):
+st.markdown("Imagen clasificada")
   
 
 if __name__ == "__main__":
