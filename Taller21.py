@@ -6,6 +6,7 @@ import gzip
 import pickle
 import sklearn
 
+
 def preprocess_image(image):
   image = image.convert('L') # convertir a escala de grises
   image = image.resize((28,28))
