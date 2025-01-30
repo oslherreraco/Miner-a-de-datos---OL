@@ -5,6 +5,7 @@ import numpy as np
 import gzip
 import pickle
 
+
 # Diccionario para asignar nombres a las clases
 class_names = [
     "Camiseta/top", "Pantalón", "Suéter", "Vestido",
