@@ -28,21 +28,16 @@ def predict_price(model):
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
 
-    # Mostrar campos de entrada con ceros por defecto
-    with cols[0]:
-        for i, col in enumerate(columns[0:7]):
-            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
-    
-    with cols[1]:
-        for i, col in enumerate(columns[7:]):
-            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
-    
-    # Mostrar los datos ingresados en una tabla
-    st.write("Valores introducidos en la tabla:")
-    st.dataframe(pd.DataFrame(st.session_state.inputs, index=[0]))
-
-    # Botón "Registrar y Predecir"
+    # Solo almacenar los datos al presionar "Registrar y Predecir"
     if st.button("Registrar y Predecir"):
+        # Leer y almacenar los valores de los campos al hacer clic en el botón
+        for i, col in enumerate(columns):
+            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
+        
+        # Mostrar la tabla con los valores ingresados
+        st.write("Valores introducidos en la tabla:")
+        st.dataframe(pd.DataFrame(st.session_state.inputs, index=[0]))
+
         # Convertir los valores introducidos en una matriz numpy
         input_data = np.array([list(st.session_state.inputs.values())])
         
