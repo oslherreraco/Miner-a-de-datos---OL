@@ -29,10 +29,13 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Almacenamos la predicción y los hiperparámetros
-    predicted_class = None
-    model_params = None
+    if 'predicted_class' not in st.session_state:
+        st.session_state.predicted_class = None  # Inicializamos el estado de la predicción
 
+    if 'model_params' not in st.session_state:
+        st.session_state.model_params = None  # Inicializamos el estado de los hiperparámetros
+
+    # Mostrar la imagen subida y hacer predicción si la imagen es cargada
     if uploaded_file is not None:
         # Abrir la imagen subida
         image = Image.open(uploaded_file)
@@ -56,8 +59,8 @@ def main():
                 prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
                 # Guardar la clase predicha
-                predicted_class = prediction[0]  # Para modelos de clasificación
-                st.markdown(f"La imagen fue clasificada como: {predicted_class}")
+                st.session_state.predicted_class = prediction[0]  # Para modelos de clasificación
+                st.markdown(f"La imagen fue clasificada como: {st.session_state.predicted_class}")
 
                 # Si el modelo es de scikit-learn, puedes obtener los hiperparámetros
                 if hasattr(model, 'get_params'):
@@ -73,14 +76,12 @@ def main():
                     ]
 
                     # Convertir a un DataFrame de pandas para tener control sobre la tabla
-                    df = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
+                    st.session_state.model_params = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
 
-                    # Mostrar un checkbox para que el usuario decida si quiere ver los hiperparámetros
-                    show_params = st.checkbox("Mostrar hiperparámetros del modelo")
-
-                    if show_params:
-                        # Mostrar la tabla con los hiperparámetros cuando el checkbox esté marcado
-                        st.write(df)  # Usamos `st.write` para mostrar el DataFrame de pandas
+    # Checkbox para mostrar los hiperparámetros
+    if st.checkbox("Mostrar hiperparámetros del modelo"):
+        if st.session_state.model_params is not None:
+            st.write(st.session_state.model_params)  # Mostrar la tabla con los hiperparámetros
 
 if __name__ == "__main__":
     main()
