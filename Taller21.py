@@ -4,8 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import sklearn
-import pandas as pd  # Importamos pandas para crear tablas personalizadas
+import pandas as pd  # Usamos pandas para crear tablas personalizadas
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
