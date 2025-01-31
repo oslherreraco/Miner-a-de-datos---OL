@@ -4,7 +4,6 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import sklearn
 import pandas as pd  # Importamos pandas para manejar las tablas
 
 # Función para preprocesar la imagen
@@ -66,8 +65,14 @@ def main():
                     # Convertir los hiperparámetros a un formato adecuado para una tabla
                     model_params_table = [(key, value) for key, value in model_params.items()]
 
+                    # Reemplazar <NA> o None por un guion o valor vacío
+                    cleaned_model_params = [
+                        (key, value if value is not None and value != "<NA>" else "-") 
+                        for key, value in model_params_table
+                    ]
+
                     # Convertir a un DataFrame de pandas para tener control sobre la tabla
-                    df = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
+                    df = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
 
                     # Mostrar la tabla con los hiperparámetros
                     st.table(df)  # Mostrar la tabla con nombre de columnas
