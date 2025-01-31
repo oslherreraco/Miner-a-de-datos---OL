@@ -19,6 +19,9 @@ from tensorflow.keras.datasets import boston_housing
 # Nombres de las columnas (según el dataset boston_housing)
 columns = ["CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS", "RAD", "TAX", "PTRATIO", "B", "LSTAT"]
 
+# Calcular los promedios de las columnas del dataset de entrenamiento para imputar
+column_means = train_data.mean(axis=0)
+
 # Crear una función que construya la interfaz y haga la predicción
 def predict_price(model):
     # Título de la app
@@ -41,22 +44,29 @@ def predict_price(model):
         for i, col in enumerate(columns[7:]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
     
+    # Crear botones para registrar los datos y limpiar los valores
+    if st.button("Limpiar los datos"):
+        # Limpiar todos los valores de entrada (ponerlos en 0.0)
+        inputs = {col: 0.0 for col in columns}
+        st.experimental_rerun()  # Vuelve a cargar la app para limpiar los campos
+
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
-        # Verificar si todos los campos han sido completados
-        if any(value == 0.0 for value in inputs.values()):
-            st.warning("Por favor, ingresa todos los valores para realizar la predicción.")
-        else:
-            # Mostrar los datos ingresados
-            st.write("Valores introducidos en la tabla:")
-            st.dataframe(pd.DataFrame(inputs, index=[0]))
+        # Imputar valores faltantes con los promedios de las variables
+        for col in inputs:
+            if inputs[col] == 0.0:
+                inputs[col] = column_means[columns.index(col)]
+        
+        # Mostrar los datos ingresados o imputados
+        st.write("Valores introducidos en la tabla:")
+        st.dataframe(pd.DataFrame(inputs, index=[0]))
 
-            # Convertir los valores introducidos en una matriz numpy
-            input_data = np.array([list(inputs.values())])
-            
-            # Realizamos la predicción
-            prediction = model.predict(input_data)
-            st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
+        # Convertir los valores introducidos en una matriz numpy
+        input_data = np.array([list(inputs.values())])
+        
+        # Realizamos la predicción
+        prediction = model.predict(input_data)
+        st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
 def main():
     # Cargar el modelo
