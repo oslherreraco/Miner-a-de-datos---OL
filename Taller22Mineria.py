@@ -34,35 +34,35 @@ def predict_price(model):
     cols = st.columns(4)
     
     # Inicializar el diccionario para capturar los valores de entrada
-    inputs = {}
+    if 'inputs' not in st.session_state:
+        st.session_state.inputs = {col: 0.0 for col in columns}
 
     with cols[0]:
         for i, col in enumerate(columns[0:7]):
-            inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
+            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
     
     with cols[1]:
         for i, col in enumerate(columns[7:]):
-            inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
+            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
     
-    # Crear botones para registrar los datos y limpiar los valores
+    # Botón para limpiar los datos
     if st.button("Limpiar los datos"):
         # Limpiar todos los valores de entrada (ponerlos en 0.0)
-        inputs = {col: 0.0 for col in columns}
-        st.experimental_rerun()  # Vuelve a cargar la app para limpiar los campos
+        st.session_state.inputs = {col: 0.0 for col in columns}
 
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
         # Imputar valores faltantes con los promedios de las variables
-        for col in inputs:
-            if inputs[col] == 0.0:
-                inputs[col] = column_means[columns.index(col)]
+        for col in st.session_state.inputs:
+            if st.session_state.inputs[col] == 0.0:
+                st.session_state.inputs[col] = column_means[columns.index(col)]
         
         # Mostrar los datos ingresados o imputados
         st.write("Valores introducidos en la tabla:")
-        st.dataframe(pd.DataFrame(inputs, index=[0]))
+        st.dataframe(pd.DataFrame(st.session_state.inputs, index=[0]))
 
         # Convertir los valores introducidos en una matriz numpy
-        input_data = np.array([list(inputs.values())])
+        input_data = np.array([list(st.session_state.inputs.values())])
         
         # Realizamos la predicción
         prediction = model.predict(input_data)
