@@ -33,12 +33,26 @@ def predict_price(model):
     
     with cols[0]:
         for i, col in enumerate(columns[0:7]):
-            input_data[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs.get(col, 0.0), step=0.1)
+            # Usar st.text_input en lugar de st.number_input
+            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.inputs.get(col, 0.0)))
+            # Validar que la entrada sea un número
+            try:
+                input_data[col] = float(input_value) if input_value else 0.0
+            except ValueError:
+                st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
+                input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
     
     with cols[1]:
         for i, col in enumerate(columns[7:]):
-            input_data[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs.get(col, 0.0), step=0.1)
-    
+            # Usar st.text_input en lugar de st.number_input
+            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.inputs.get(col, 0.0)))
+            # Validar que la entrada sea un número
+            try:
+                input_data[col] = float(input_value) if input_value else 0.0
+            except ValueError:
+                st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
+                input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
+
     # Mostrar los datos introducidos en una tabla
     st.write("Valores introducidos en la tabla:")
     st.dataframe(pd.DataFrame(input_data, index=[0]))
