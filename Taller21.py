@@ -32,8 +32,22 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Cargar modelo solo una vez
+    # Cargar el modelo solo una vez
     model = load_model()
+
+    # Si el checkbox está marcado, mostrar los hiperparámetros
+    if show_hyperparameters:
+        st.subheader("Hiperparámetros del Modelo:")
+        model_params = model.get_params()  # Obtener los hiperparámetros
+
+        # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
+        cleaned_model_params = [
+            (key, value if value is not None and value != "<NA>" else "-") 
+            for key, value in model_params.items()
+        ]
+        
+        # Mostrar la tabla con los hiperparámetros
+        st.table(cleaned_model_params)
 
     # Mostrar imagen y realizar la predicción
     if uploaded_file is not None:
@@ -51,19 +65,6 @@ def main():
             predicted_class = prediction[0]  # Resultado de la clasificación
             st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-            # Si se selecciona el checkbox, mostrar los hiperparámetros
-            if show_hyperparameters:
-                st.subheader("Hiperparámetros del Modelo:")
-                model_params = model.get_params()  # Obtener los hiperparámetros
-
-                # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
-                cleaned_model_params = [
-                    (key, value if value is not None and value != "<NA>" else "-") 
-                    for key, value in model_params.items()
-                ]
-
-                # Mostrar la tabla con los hiperparámetros
-                st.table(cleaned_model_params)
 
 if __name__ == "__main__":
     main()
