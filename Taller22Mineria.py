@@ -10,17 +10,8 @@ def load_model():
         model = pickle.load(f)
     return model
 
-# Cargar los datos de Boston
-from tensorflow.keras.datasets import boston_housing
-
-# Cargar los datos de entrenamiento para asegurarse de que la entrada del usuario sea coherente
-(train_data, train_labels), (test_data, test_labels) = boston_housing.load_data()
-
 # Nombres de las columnas (según el dataset boston_housing)
 columns = ["CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS", "RAD", "TAX", "PTRATIO", "B", "LSTAT"]
-
-# Calcular los promedios de las columnas del dataset de entrenamiento para imputar
-column_means = train_data.mean(axis=0)
 
 # Crear una función que construya la interfaz y haga la predicción
 def predict_price(model):
@@ -52,12 +43,7 @@ def predict_price(model):
 
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
-        # Imputar valores faltantes con los promedios de las variables
-        for col in st.session_state.inputs:
-            if st.session_state.inputs[col] == 0.0:
-                st.session_state.inputs[col] = column_means[columns.index(col)]
-        
-        # Mostrar los datos ingresados o imputados
+        # Mostrar los datos ingresados
         st.write("Valores introducidos en la tabla:")
         st.dataframe(pd.DataFrame(st.session_state.inputs, index=[0]))
 
