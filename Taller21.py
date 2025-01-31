@@ -55,15 +55,15 @@ def main():
                 predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
+                # Obtener los hiperparámetros del modelo
+                model_params = model.get_params()
+            
                 # Agregar un checkbox para mostrar u ocultar los hiperparámetros
-                    if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
+                if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
     
                         st.subheader("Hiperparámetros del Modelo:")
-        
-                        # Obtener los hiperparámetros del modelo
-                        model_params = model.get_params()
-        
-                                # Convertir los hiperparámetros a una lista de tuplas (nombre, valor)
+                
+                        # Convertir los hiperparámetros a una lista de tuplas (nombre, valor)
                         model_params_table = [(key, value) for key, value in model_params.items()]
         
                                 # Convertir la lista de tuplas en un DataFrame de pandas
