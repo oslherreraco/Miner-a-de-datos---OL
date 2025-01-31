@@ -27,19 +27,19 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Crear el formulario de entrada en 4 columnas: 2 para las variables y 2 para los valores ingresados
+    # Crear el formulario de entrada en 4 columnas
     data_input = pd.DataFrame(columns=columns)
     
-    # Usar `st.columns` para crear columnas interactivas
-    col1, col2 = st.columns(4)
+    # Usar `st.columns(4)` para crear 4 columnas
+    cols = st.columns(4)
     
     inputs = {}
     
-    with col1:
+    with cols[0]:
         for i, col in enumerate(columns[0:7]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
     
-    with col2:
+    with cols[1]:
         for i, col in enumerate(columns[7:]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
     
@@ -67,4 +67,3 @@ def main():
 # Si el script es ejecutado directamente, se llama a main()
 if __name__ == "__main__":
     main()
-
