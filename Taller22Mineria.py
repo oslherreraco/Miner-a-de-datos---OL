@@ -30,7 +30,7 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Inicializar el diccionario para capturar los valores de entrada
+    # Inicializar el diccionario para capturar los valores de entrada si no están en session_state
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: column_means[columns.index(col)] for col in columns}  # Inicializar con el promedio
 
@@ -48,16 +48,22 @@ def predict_price(model):
         col1, col2, col3 = st.columns(3)
         with col1:
             # Asignar el valor directamente
+            if row[0] not in st.session_state.inputs:
+                st.session_state.inputs[row[0]] = column_means[columns.index(row[0])]
             value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs[row[0]], step=0.1)
             st.session_state.inputs[row[0]] = value1
 
         with col2:
             # Asignar el valor directamente
+            if row[1] not in st.session_state.inputs:
+                st.session_state.inputs[row[1]] = column_means[columns.index(row[1])]
             value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs[row[1]], step=0.1)
             st.session_state.inputs[row[1]] = value2
 
         with col3:
             # Asignar el valor directamente
+            if row[2] not in st.session_state.inputs:
+                st.session_state.inputs[row[2]] = column_means[columns.index(row[2])]
             value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs[row[2]], step=0.1)
             st.session_state.inputs[row[2]] = value3
 
