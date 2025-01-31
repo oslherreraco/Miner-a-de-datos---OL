@@ -29,25 +29,30 @@ def predict_price(model):
         st.session_state.inputs = {col: 0.0 for col in columns}
 
     # Mostrar campos de entrada con ceros por defecto
+    input_data = {}
+    
     with cols[0]:
         for i, col in enumerate(columns[0:7]):
-            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
+            input_data[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs.get(col, 0.0), step=0.1)
     
     with cols[1]:
         for i, col in enumerate(columns[7:]):
-            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
+            input_data[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs.get(col, 0.0), step=0.1)
     
-    # Mostrar los datos ingresados en una tabla
+    # Mostrar los datos introducidos en una tabla
     st.write("Valores introducidos en la tabla:")
-    st.dataframe(pd.DataFrame(st.session_state.inputs, index=[0]))
+    st.dataframe(pd.DataFrame(input_data, index=[0]))
 
     # Botón "Registrar y Predecir"
     if st.button("Registrar y Predecir"):
+        # Al presionar "Registrar y Predecir", almacenamos los datos en el session_state
+        st.session_state.inputs = input_data
+        
         # Convertir los valores introducidos en una matriz numpy
-        input_data = np.array([list(st.session_state.inputs.values())])
+        input_array = np.array([list(st.session_state.inputs.values())])
         
         # Realizamos la predicción
-        prediction = model.predict(input_data)
+        prediction = model.predict(input_array)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
 def main():
@@ -60,5 +65,3 @@ def main():
 # Si el script es ejecutado directamente, se llama a main()
 if __name__ == "__main__":
     main()
-
-
