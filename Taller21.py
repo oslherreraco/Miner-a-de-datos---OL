@@ -44,7 +44,7 @@ def main():
             st.markdown("Imagen clasificada")
             model = load_model()  # Cargar el modelo
 
-            if model is not None:
+        if model is not None:
                 # Aplanar la imagen a un vector de 784 características para modelos de scikit-learn
                 flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
 
