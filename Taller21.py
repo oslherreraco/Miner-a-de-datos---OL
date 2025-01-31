@@ -33,6 +33,7 @@ def main():
     if 'prediction' not in st.session_state:
         st.session_state.prediction = None
         st.session_state.model_params = None
+        st.session_state.show_checkbox = False  # Inicializamos el estado del checkbox
 
     if uploaded_file is not None:
         # Abrir la imagen subida
@@ -67,14 +68,18 @@ def main():
                 # Mostrar la predicción
                 st.markdown(f"La imagen fue clasificada como: {st.session_state.prediction}")
 
-        # Checkbox para mostrar los hiperparámetros
-        if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
-            if st.session_state.model_params:
-                st.subheader("Hiperparámetros del Modelo:")
-                model_params_table = [(key, value) for key, value in st.session_state.model_params.items()]
-                
-                # Mostrar la tabla con los hiperparámetros
-                st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
+                # Activar el checkbox después de clasificar la imagen
+                st.session_state.show_checkbox = True  # Mostrar el checkbox después de clasificar la imagen
+
+        # Mostrar el checkbox después de clasificar la imagen
+        if st.session_state.show_checkbox:
+            if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
+                if st.session_state.model_params:
+                    st.subheader("Hiperparámetros del Modelo:")
+                    model_params_table = [(key, value) for key, value in st.session_state.model_params.items()]
+                    
+                    # Mostrar la tabla con los hiperparámetros
+                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
