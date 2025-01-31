@@ -28,16 +28,6 @@ def predict_price(model):
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
         
-    # Botón "Iniciar" para mostrar el formulario de entrada
-    if st.button("Iniciar"):
-        # Mostrar campos de entrada con ceros por defecto
-        with cols[0]:
-            for i, col in enumerate(columns[0:7]):
-                st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
-        
-        with cols[1]:
-            for i, col in enumerate(columns[7:]):
-                st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
         
         # Mostrar los datos ingresados en una tabla
         st.write("Valores introducidos en la tabla:")
