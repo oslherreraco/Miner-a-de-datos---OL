@@ -59,7 +59,13 @@ def main():
                 if hasattr(model, 'get_params'):
                     st.subheader("Hiperparámetros del Modelo:")
                     model_params = model.get_params()
-                    st.json(model_params)  # Mostrar los hiperparámetros como JSON
+
+                    # Convertir los hiperparámetros a un formato adecuado para una tabla
+                    model_params_table = [(key, value) for key, value in model_params.items()]
+                    
+                    # Mostrar la tabla con los hiperparámetros
+                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
+
