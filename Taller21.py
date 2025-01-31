@@ -6,6 +6,7 @@ import gzip
 import pickle
 import pandas as pd  # Importamos pandas para crear la tabla personalizada
 
+
 # Función para preprocesar la imagen
 def preprocess_image(image):
     image = image.convert('L')  # Convertir a escala de grises
