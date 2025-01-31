@@ -60,7 +60,7 @@ def predict_price(model):
 
     # Mostrar los datos introducidos en una tabla
     st.write("Valores introducidos en la tabla:")
-    # Asegurarse de que input_data sea un diccionario de formato adecuado
+    # Crear un DataFrame a partir del diccionario con las entradas
     input_df = pd.DataFrame([input_data])  # Crear un DataFrame desde el diccionario de entradas
     st.dataframe(input_df)
 
