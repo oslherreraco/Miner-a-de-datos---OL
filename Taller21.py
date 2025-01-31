@@ -26,30 +26,12 @@ def main():
     st.title("Clasificación de la base de datos MNIST")
     st.markdown("Sube una imagen para clasificar")
 
-    # Checkbox para mostrar los hiperparámetros
-    show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
-
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Cargar el modelo solo una vez
     model = load_model()
 
-    # Si el checkbox está marcado, mostrar los hiperparámetros
-    if show_hyperparameters:
-        st.subheader("Hiperparámetros del Modelo:")
-        model_params = model.get_params()  # Obtener los hiperparámetros
-
-        # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
-        cleaned_model_params = [
-            (key, value if value is not None and value != "<NA>" else "-") 
-            for key, value in model_params.items()
-        ]
-        
-        # Mostrar la tabla con los hiperparámetros
-        st.table(cleaned_model_params)
-
-    # Mostrar imagen y realizar la predicción
+    # Si se ha subido una imagen
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption="Imagen subida")  # Mostrar la imagen subida
@@ -58,6 +40,24 @@ def main():
         # Mostrar la imagen preprocesada
         st.image(image, caption="Imagen preprocesada")  
 
+        # Checkbox para mostrar los hiperparámetros
+        show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
+
+        # Si el checkbox está marcado, mostrar los hiperparámetros
+        if show_hyperparameters:
+            st.subheader("Hiperparámetros del Modelo:")
+            model_params = model.get_params()  # Obtener los hiperparámetros
+
+            # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
+            cleaned_model_params = [
+                (key, value if value is not None and value != "<NA>" else "-") 
+                for key, value in model_params.items()
+            ]
+            
+            # Mostrar la tabla con los hiperparámetros
+            st.table(cleaned_model_params)
+
+        # Clasificar la imagen
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
             flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
