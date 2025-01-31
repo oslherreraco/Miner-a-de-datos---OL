@@ -5,6 +5,7 @@ import numpy as np
 import gzip
 import pickle
 import sklearn
+import pandas as pd  # Importamos pandas para crear tablas personalizadas
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -55,17 +56,25 @@ def main():
                 predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Si el modelo es de scikit-learn, puedes mostrar los hiperparámetros
-                if hasattr(model, 'get_params'):
-                    st.subheader("Hiperparámetros del Modelo:")
-                    model_params = model.get_params()
+                # Agregar un checkbox para mostrar u ocultar los hiperparámetros
+                show_params = st.checkbox("Mostrar hiperparámetros del modelo", value=False)
 
-                    # Convertir los hiperparámetros a un formato adecuado para una tabla
-                    model_params_table = [(key, value) for key, value in model_params.items()]
-                    
-                    # Mostrar la tabla con los hiperparámetros
-                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
+                if show_params:
+                    # Si el modelo tiene hiperparámetros, mostrar la tabla
+                    if hasattr(model, 'get_params'):
+                        st.subheader("Hiperparámetros del Modelo:")
+
+                        # Obtener los hiperparámetros del modelo
+                        model_params = model.get_params()
+
+                        # Convertir los hiperparámetros a una lista de tuplas (nombre, valor)
+                        model_params_table = [(key, value) for key, value in model_params.items()]
+
+                        # Convertir la lista de tuplas en un DataFrame de pandas
+                        df_params = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
+
+                        # Mostrar la tabla sin índices
+                        st.table(df_params)  # Mostrar la tabla sin número de fila
 
 if __name__ == "__main__":
     main()
-
