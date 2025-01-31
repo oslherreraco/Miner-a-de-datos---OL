@@ -29,6 +29,9 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
+    # Almacenamos los hiperparámetros fuera del botón de clasificación para poder acceder a ellos después
+    model_params = None
+
     if uploaded_file is not None:
         # Abrir la imagen subida
         image = Image.open(uploaded_file)
@@ -55,11 +58,8 @@ def main():
                 predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Si el modelo es de scikit-learn, puedes mostrar los hiperparámetros
+                # Si el modelo es de scikit-learn, puedes obtener los hiperparámetros
                 if hasattr(model, 'get_params'):
-                    st.subheader("Hiperparámetros del Modelo:")
-
-                    # Obtener los parámetros del modelo
                     model_params = model.get_params()
 
                     # Convertir los hiperparámetros a un formato adecuado para una tabla
@@ -74,8 +74,12 @@ def main():
                     # Convertir a un DataFrame de pandas para tener control sobre la tabla
                     df = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
 
-                    # Mostrar la tabla con los hiperparámetros
-                    st.table(df)  # Mostrar la tabla con nombre de columnas
+                    # Mostrar un checkbox para que el usuario decida si quiere ver los hiperparámetros
+                    show_params = st.checkbox("Mostrar hiperparámetros del modelo")
+
+                    if show_params:
+                        # Mostrar la tabla con los hiperparámetros cuando el checkbox esté marcado
+                        st.table(df)  # Mostrar la tabla con nombre de columnas
 
 if __name__ == "__main__":
     main()
