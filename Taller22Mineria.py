@@ -48,17 +48,17 @@ def predict_price(model):
         col1, col2, col3 = st.columns(3)
         with col1:
             # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs.get(row[0], column_means[columns.index(row[0])]), step=0.1)
+            value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs[row[0]] if st.session_state.inputs[row[0]] != 0 else column_means[columns.index(row[0])], step=0.1)
             st.session_state.inputs[row[0]] = value1
 
         with col2:
             # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs.get(row[1], column_means[columns.index(row[1])]), step=0.1)
+            value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs[row[1]] if st.session_state.inputs[row[1]] != 0 else column_means[columns.index(row[1])], step=0.1)
             st.session_state.inputs[row[1]] = value2
 
         with col3:
             # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs.get(row[2], column_means[columns.index(row[2])]), step=0.1)
+            value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs[row[2]] if st.session_state.inputs[row[2]] != 0 else column_means[columns.index(row[2])], step=0.1)
             st.session_state.inputs[row[2]] = value3
 
     # Botón para limpiar los datos
