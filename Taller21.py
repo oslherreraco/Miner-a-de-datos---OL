@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import pandas as pd  # Importamos pandas para manejar las tablas
+import pandas as pd
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -29,7 +29,7 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Almacenamos la predicción y los hiperparámetros en variables globales
+    # Almacenamos la predicción y los hiperparámetros
     predicted_class = None
     model_params = None
 
@@ -78,9 +78,9 @@ def main():
                     # Mostrar un checkbox para que el usuario decida si quiere ver los hiperparámetros
                     show_params = st.checkbox("Mostrar hiperparámetros del modelo")
 
-                if show_params:
+                    if show_params:
                         # Mostrar la tabla con los hiperparámetros cuando el checkbox esté marcado
-                        st.table(df)  # Mostrar la tabla con nombre de columnas
+                        st.write(df)
 
 if __name__ == "__main__":
     main()
