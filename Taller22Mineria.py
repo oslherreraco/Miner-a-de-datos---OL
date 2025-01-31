@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
 import pickle
 import gzip
 
@@ -24,31 +23,36 @@ def predict_price(model):
     # Crear el formulario de entrada en 4 columnas
     cols = st.columns(4)
 
-    # Inicializar los inputs vacíos en ceros automáticamente cuando se carga la página
-    if 'inputs' not in st.session_state:
-        st.session_state.inputs = {col: 0.0 for col in columns}
+    # Inicializar las variables en st.session_state si no están presentes
+    for col in columns:
+        if f"input_{col}" not in st.session_state:
+            st.session_state[f"input_{col}"] = 0.0  # Inicializar cada variable individualmente con valor 0.0
 
     # Mostrar campos de entrada con ceros por defecto
     input_data = {}
-    
+
     with cols[0]:
         for i, col in enumerate(columns[0:7]):
-            # Usar st.text_input en lugar de st.number_input
-            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.inputs.get(col, 0.0)))
+            # Usar st.text_input para permitir la entrada de datos como texto
+            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.get(f'input_{col}', 0.0)))
             # Validar que la entrada sea un número
             try:
                 input_data[col] = float(input_value) if input_value else 0.0
+                # Guardar el valor en session_state de manera individual
+                st.session_state[f'input_{col}'] = input_data[col]
             except ValueError:
                 st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
                 input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
-    
+
     with cols[1]:
         for i, col in enumerate(columns[7:]):
-            # Usar st.text_input en lugar de st.number_input
-            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.inputs.get(col, 0.0)))
+            # Usar st.text_input para permitir la entrada de datos como texto
+            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.get(f'input_{col}', 0.0)))
             # Validar que la entrada sea un número
             try:
                 input_data[col] = float(input_value) if input_value else 0.0
+                # Guardar el valor en session_state de manera individual
+                st.session_state[f'input_{col}'] = input_data[col]
             except ValueError:
                 st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
                 input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
@@ -59,16 +63,19 @@ def predict_price(model):
 
     # Botón "Registrar y Predecir"
     if st.button("Registrar y Predecir"):
-        # Al presionar "Registrar y Predecir", almacenamos los datos en el session_state
-        st.session_state.inputs = input_data
-        
         # Convertir los valores introducidos en una matriz numpy
-        input_array = np.array([list(st.session_state.inputs.values())])
+        input_array = np.array([list(input_data.values())])
         
         # Realizamos la predicción
         prediction = model.predict(input_array)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
-     
+
+        # Restablecer los valores de entrada a ceros después de la predicción
+        for col in columns:
+            st.session_state[f'input_{col}'] = 0.0  # Restablecer los valores a 0.0
+        
+        # Mostrar mensaje de que los datos han sido restablecidos
+        st.write("¡Los datos han sido reiniciados!")
 
 def main():
     # Cargar el modelo
