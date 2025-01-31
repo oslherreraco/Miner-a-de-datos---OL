@@ -32,7 +32,7 @@ def predict_price(model):
     
     # Inicializar el diccionario para capturar los valores de entrada
     if 'inputs' not in st.session_state:
-        st.session_state.inputs = {col: 0.0 for col in columns}
+        st.session_state.inputs = {col: column_means[columns.index(col)] for col in columns}  # Inicializar con el promedio
 
     # Crear una tabla de entrada con 3 columnas
     data = []
@@ -47,24 +47,24 @@ def predict_price(model):
     for idx, row in enumerate(data):
         col1, col2, col3 = st.columns(3)
         with col1:
-            # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs[row[0]] if st.session_state.inputs[row[0]] != 0 else column_means[columns.index(row[0])], step=0.1)
+            # Asignar el valor directamente
+            value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs[row[0]], step=0.1)
             st.session_state.inputs[row[0]] = value1
 
         with col2:
-            # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs[row[1]] if st.session_state.inputs[row[1]] != 0 else column_means[columns.index(row[1])], step=0.1)
+            # Asignar el valor directamente
+            value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs[row[1]], step=0.1)
             st.session_state.inputs[row[1]] = value2
 
         with col3:
-            # Comprobar si el valor ya está en st.session_state, de lo contrario usar el promedio
-            value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs[row[2]] if st.session_state.inputs[row[2]] != 0 else column_means[columns.index(row[2])], step=0.1)
+            # Asignar el valor directamente
+            value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs[row[2]], step=0.1)
             st.session_state.inputs[row[2]] = value3
 
     # Botón para limpiar los datos
     if st.button("Limpiar los datos"):
-        # Limpiar todos los valores de entrada (ponerlos en 0.0)
-        st.session_state.inputs = {col: 0.0 for col in columns}
+        # Limpiar todos los valores de entrada (ponerlos en los promedios de las columnas)
+        st.session_state.inputs = {col: column_means[columns.index(col)] for col in columns}
 
     # Mostrar los datos ingresados
     if st.button("Registrar y Predecir"):
