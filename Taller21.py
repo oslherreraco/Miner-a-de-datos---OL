@@ -6,7 +6,6 @@ import gzip
 import pickle
 import pandas as pd  # Importamos pandas para crear la tabla personalizada
 
-
 # Función para preprocesar la imagen
 def preprocess_image(image):
     image = image.convert('L')  # Convertir a escala de grises
@@ -63,14 +62,13 @@ def main():
                     # Obtener los hiperparámetros
                     model_params = model.get_params()
 
-                    # Convertir los hiperparámetros a un formato adecuado para una tabla
-                    model_params_table = [(key, value) for key, value in model_params.items()]
+                    # Convertir los hiperparámetros a un formato adecuado para un texto
+                    model_params_text = ""
+                    for key, value in model_params.items():
+                        model_params_text += f"{key}: {value}\n"
 
-                    # Convertir a DataFrame para personalizar la tabla
-                    df = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
-
-                    # Crear una tabla sin índice numérico
-                    st.table(df.style.hide(axis="index"))  # Usamos style.hide para ocultar el índice
+                    # Mostrar los hiperparámetros en un editor de texto
+                    st.text_area("Hiperparámetros del modelo", model_params_text, height=300)
 
 if __name__ == "__main__":
     main()
