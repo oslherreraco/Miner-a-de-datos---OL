@@ -33,7 +33,7 @@ def predict_price(model):
     # Crear el formulario de entrada en 4 columnas
     cols = st.columns(4)
     
-    # Inicializar el diccionario para capturar los valores de entrada
+    # Inicializar el diccionario para capturar los valores de entrada si no existe en session_state
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
 
