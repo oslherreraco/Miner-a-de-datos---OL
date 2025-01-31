@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pickle
 import gzip
+import pandas as pd
 
 # Cargar el modelo entrenado
 def load_model():
@@ -59,7 +60,9 @@ def predict_price(model):
 
     # Mostrar los datos introducidos en una tabla
     st.write("Valores introducidos en la tabla:")
-    st.dataframe(pd.DataFrame(input_data, index=[0]))
+    # Asegurarse de que input_data sea un diccionario de formato adecuado
+    input_df = pd.DataFrame([input_data])  # Crear un DataFrame desde el diccionario de entradas
+    st.dataframe(input_df)
 
     # Botón "Registrar y Predecir"
     if st.button("Registrar y Predecir"):
