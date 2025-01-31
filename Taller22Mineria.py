@@ -55,6 +55,12 @@ def predict_price(model):
         prediction = model.predict(input_array)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
+        # Restablecer los valores de entrada a ceros después de la predicción
+        st.session_state.inputs = {col: 0.0 for col in columns}
+        
+        # Mostrar mensaje de que los datos han sido restablecidos
+        st.write("¡Los datos han sido reiniciados!")
+
 def main():
     # Cargar el modelo
     model = load_model()
