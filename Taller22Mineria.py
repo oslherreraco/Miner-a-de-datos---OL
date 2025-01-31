@@ -27,7 +27,7 @@ def predict_price(model):
     # Inicializar los inputs vacíos solo cuando se haga clic en "Iniciar"
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
-
+        
     # Botón "Iniciar" para mostrar el formulario de entrada
     if st.button("Iniciar"):
         # Mostrar campos de entrada con ceros por defecto
