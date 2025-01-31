@@ -4,8 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import tensorflow as tf  # Asegúrate de tener TensorFlow instalado
-
+import sklearn
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -15,14 +14,12 @@ def preprocess_image(image):
     image_array = np.expand_dims(image_array, axis=0)  # Añadir la dimensión de batch (1,)
     return image_array
 
-
 # Función para cargar el modelo
 def load_model():
     filename = "model_trained_classifier2.pkl.gz"  # Asegúrate de tener el modelo comprimido en .gz
     with gzip.open(filename, 'rb') as f:
         model = pickle.load(f)
     return model
-
 
 # Función principal de la aplicación Streamlit
 def main():
@@ -48,27 +45,21 @@ def main():
             model = load_model()  # Cargar el modelo
 
             if model is not None:
+                # Aplanar la imagen a un vector de 784 características para modelos de scikit-learn
+                flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
+
                 # Realizar la predicción con el modelo cargado
-                prediction = model.predict(preprocessed_image)  # La imagen ya tiene la forma correcta
+                prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
                 # Mostrar el resultado de la predicción
-                predicted_class = np.argmax(prediction)  # Si es un modelo de clasificación
+                predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Mostrar el resumen del modelo (para modelos de Keras)
-                if isinstance(model, tf.keras.Model):  # Comprobar si el modelo es de tipo Keras
-                    st.subheader("Resumen del Modelo:")
-                    with st.expander("Ver resumen del modelo"):
-                        model.summary()  # Mostrar el resumen de la arquitectura del modelo
-
-                    # Mostrar los hiperparámetros del modelo
+                # Si el modelo es de scikit-learn, puedes mostrar los hiperparámetros
+                if hasattr(model, 'get_params'):
                     st.subheader("Hiperparámetros del Modelo:")
-                    model_config = model.get_config()  # Obtener configuración del modelo
-                    st.json(model_config)  # Mostrar los hiperparámetros como JSON
+                    model_params = model.get_params()
+                    st.json(model_params)  # Mostrar los hiperparámetros como JSON
 
-
-# Ejecutar la aplicación de Streamlit
 if __name__ == "__main__":
     main()
-
-
