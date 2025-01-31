@@ -80,7 +80,7 @@ def main():
 
                     if show_params:
                         # Mostrar la tabla con los hiperparámetros cuando el checkbox esté marcado
-                        st.write(df)
+                        st.write(df)  # Usamos `st.write` para mostrar el DataFrame de pandas
 
 if __name__ == "__main__":
     main()
