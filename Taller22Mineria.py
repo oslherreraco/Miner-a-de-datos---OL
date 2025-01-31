@@ -34,23 +34,29 @@ def predict_price(model):
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
 
-    # Crear un dataframe para la tabla de entrada
+    # Crear una tabla de entrada con 3 columnas
     data = []
     for i in range(0, len(columns), 3):  # Esto organiza en filas de 3 columnas
         row = columns[i:i+3]
         data.append(row)
 
-    # Crear una tabla con 3 columnas
-    df = pd.DataFrame(data, columns=["Variable 1", "Variable 2", "Variable 3"])
-
-    # Mostrar la tabla de entrada y capturar los valores
+    # Crear la interfaz para que el usuario ingrese los datos
     st.write("Introduzca los datos para las variables de la vivienda:")
-    st.dataframe(df)
     
+    # Crear una tabla de 3 columnas
     for idx, row in enumerate(data):
-        for j, col in enumerate(row):
-            value = st.number_input(f'{col} (Variable)', key=f'{col}_{idx}_{j}', value=st.session_state.inputs.get(col, 0.0), step=0.1)
-            st.session_state.inputs[col] = value  # Guardar el valor ingresado
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            value1 = st.number_input(f'{row[0]}', value=st.session_state.inputs.get(row[0], column_means[columns.index(row[0])]), step=0.1)
+            st.session_state.inputs[row[0]] = value1
+
+        with col2:
+            value2 = st.number_input(f'{row[1]}', value=st.session_state.inputs.get(row[1], column_means[columns.index(row[1])]), step=0.1)
+            st.session_state.inputs[row[1]] = value2
+
+        with col3:
+            value3 = st.number_input(f'{row[2]}', value=st.session_state.inputs.get(row[2], column_means[columns.index(row[2])]), step=0.1)
+            st.session_state.inputs[row[2]] = value3
 
     # Botón para limpiar los datos
     if st.button("Limpiar los datos"):
