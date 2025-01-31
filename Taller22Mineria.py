@@ -30,39 +30,34 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Crear el formulario de entrada con 3 columnas
-    cols = st.columns(3)
-    
     # Inicializar el diccionario para capturar los valores de entrada
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
 
-    # Asignamos los inputs a las columnas en el orden de izquierda a derecha
-    with cols[0]:
-        st.session_state.inputs["CRIM"] = st.number_input("CRIM", value=st.session_state.inputs["CRIM"], step=0.1)
-        st.session_state.inputs["ZN"] = st.number_input("ZN", value=st.session_state.inputs["ZN"], step=0.1)
-        st.session_state.inputs["INDUS"] = st.number_input("INDUS", value=st.session_state.inputs["INDUS"], step=0.1)
-        st.session_state.inputs["CHAS"] = st.number_input("CHAS", value=st.session_state.inputs["CHAS"], step=0.1)
-        st.session_state.inputs["NOX"] = st.number_input("NOX", value=st.session_state.inputs["NOX"], step=0.1)
+    # Crear un dataframe para la tabla de entrada
+    data = []
+    for i in range(0, len(columns), 3):  # Esto organiza en filas de 3 columnas
+        row = columns[i:i+3]
+        data.append(row)
 
-    with cols[1]:
-        st.session_state.inputs["RM"] = st.number_input("RM", value=st.session_state.inputs["RM"], step=0.1)
-        st.session_state.inputs["AGE"] = st.number_input("AGE", value=st.session_state.inputs["AGE"], step=0.1)
-        st.session_state.inputs["DIS"] = st.number_input("DIS", value=st.session_state.inputs["DIS"], step=0.1)
-        st.session_state.inputs["RAD"] = st.number_input("RAD", value=st.session_state.inputs["RAD"], step=0.1)
-        st.session_state.inputs["TAX"] = st.number_input("TAX", value=st.session_state.inputs["TAX"], step=0.1)
+    # Crear una tabla con 3 columnas
+    df = pd.DataFrame(data, columns=["Variable 1", "Variable 2", "Variable 3"])
 
-    with cols[2]:
-        st.session_state.inputs["PTRATIO"] = st.number_input("PTRATIO", value=st.session_state.inputs["PTRATIO"], step=0.1)
-        st.session_state.inputs["B"] = st.number_input("B", value=st.session_state.inputs["B"], step=0.1)
-        st.session_state.inputs["LSTAT"] = st.number_input("LSTAT", value=st.session_state.inputs["LSTAT"], step=0.1)
+    # Mostrar la tabla de entrada y capturar los valores
+    st.write("Introduzca los datos para las variables de la vivienda:")
+    st.dataframe(df)
     
+    for idx, row in enumerate(data):
+        for j, col in enumerate(row):
+            value = st.number_input(f'{col} (Variable)', key=f'{col}_{idx}_{j}', value=st.session_state.inputs.get(col, 0.0), step=0.1)
+            st.session_state.inputs[col] = value  # Guardar el valor ingresado
+
     # Botón para limpiar los datos
     if st.button("Limpiar los datos"):
         # Limpiar todos los valores de entrada (ponerlos en 0.0)
         st.session_state.inputs = {col: 0.0 for col in columns}
 
-    # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
+    # Mostrar los datos ingresados
     if st.button("Registrar y Predecir"):
         # Imputar valores faltantes con los promedios de las variables
         for col in st.session_state.inputs:
