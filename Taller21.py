@@ -58,22 +58,19 @@ def main():
                 # Agregar un checkbox para mostrar u ocultar los hiperparámetros
                 show_params = st.checkbox("Mostrar hiperparámetros del modelo", value=False)
 
-                if show_params:
-                    # Si el modelo tiene hiperparámetros, mostrar la tabla
-                    if hasattr(model, 'get_params'):
-                        st.subheader("Hiperparámetros del Modelo:")
+                st.subheader("Hiperparámetros del Modelo:")
 
-                        # Obtener los hiperparámetros del modelo
-                        model_params = model.get_params()
+                # Obtener los hiperparámetros del modelo
+                model_params = model.get_params()
 
                         # Convertir los hiperparámetros a una lista de tuplas (nombre, valor)
-                        model_params_table = [(key, value) for key, value in model_params.items()]
+                model_params_table = [(key, value) for key, value in model_params.items()]
 
                         # Convertir la lista de tuplas en un DataFrame de pandas
-                        df_params = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
+                df_params = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
 
                         # Mostrar la tabla sin índices
-                        st.table(df_params)  # Mostrar la tabla sin número de fila
+                st.table(df_params)  # Mostrar la tabla sin número de fila
 
 if __name__ == "__main__":
     main()
