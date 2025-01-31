@@ -22,7 +22,7 @@ def predict_price(model):
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
     # Crear el formulario de entrada en 4 columnas
-    cols = st.columns(4)
+    cols = st.columns(6)
     
     # Inicializar los inputs vacíos solo cuando se haga clic en "Registrar y Predecir"
     inputs = {col: 0.0 for col in columns}
