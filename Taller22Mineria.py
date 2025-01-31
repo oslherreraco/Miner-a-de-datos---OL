@@ -22,7 +22,7 @@ def predict_price(model):
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
     # Crear el formulario de entrada en 4 columnas
-    cols = st.columns(6)
+    cols = st.columns(4)
     
     # Inicializar los inputs vacíos solo cuando se haga clic en "Registrar y Predecir"
     inputs = {col: 0.0 for col in columns}
@@ -36,12 +36,7 @@ def predict_price(model):
         for i, col in enumerate(columns[7:]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=inputs[col], step=0.1)
     
-    # Botón para limpiar los datos
-    if st.button("Limpiar los datos"):
-        # Limpiar todos los valores de entrada (ponerlos en 0.0)
-        inputs = {col: 0.0 for col in columns}
-        # Mostrar mensaje de confirmación
-        st.write("¡Datos limpiados!")
+)
 
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
@@ -55,6 +50,14 @@ def predict_price(model):
         # Realizamos la predicción
         prediction = model.predict(input_data)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
+
+    # Botón para limpiar los datos
+if st.button("Limpiar los datos"):
+        # Limpiar todos los valores de entrada (ponerlos en 0.0)
+        inputs = {col: 0.0 for col in columns}
+        # Mostrar mensaje de confirmación
+        st.write("¡Datos limpiados!"
+
 
 def main():
     # Cargar el modelo
