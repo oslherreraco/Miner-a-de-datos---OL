@@ -8,11 +8,12 @@ import sklearn
 
 
 def preprocess_image(image):
-  image = image.convert('L') # convertir a escala de grises
-  image = image.resize((28,28))
-  image_array = img_to_array(image) / 255.0
-  image_array = np.expand_dims(image_array, axis=0)
-  return image_array
+    image = image.convert('L')  # Convertir a escala de grises
+    image = image.resize((28, 28))  # Redimensionar a 28x28 píxeles
+    image_array = img_to_array(image) / 255.0  # Normalizar los valores de píxeles
+    image_array = np.expand_dims(image_array, axis=0)  # Añadir la dimensión de batch (1,)
+    image_array = np.expand_dims(image_array, axis=-1)  # Añadir la dimensión del canal (1,)
+    return image_array
 
 def load_model():
     filename = "model_trained_classifier2.pkl"
@@ -44,9 +45,11 @@ def main():
     if st.button("Clasificar imagen"):
       st.markdown("Imagen clasificada")
       model = load_model()
-
-      prediction = model.predict(preprocessed_image.reshape(1,-1)) # (1, 784)
-      st.markdown(f"La imagen fue clasificada como: {prediction}")
+  
+      if model is not None:
+          # Realizar la predicción directamente con la imagen procesada
+          prediction = model.predict(preprocessed_image)  # El preprocesado ya tiene la forma correcta
+          st.markdown(f"La imagen fue clasificada como: {prediction[0]}")
 
 
 if __name__ == "__main__":
