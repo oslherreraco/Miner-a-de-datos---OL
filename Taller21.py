@@ -76,7 +76,12 @@ def main():
             if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
                 if st.session_state.model_params:
                     st.subheader("Hiperparámetros del Modelo:")
-                    model_params_table = [(key, value) for key, value in st.session_state.model_params.items()]
+                    
+                    # Reemplazar <NA> por un valor más adecuado
+                    model_params_table = [
+                        (key, "No disponible" if value is None else value)  # Reemplazar None por "No disponible"
+                        for key, value in st.session_state.model_params.items()
+                    ]
                     
                     # Mostrar la tabla con los hiperparámetros
                     st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
