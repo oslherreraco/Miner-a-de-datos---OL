@@ -34,7 +34,7 @@ def main():
     st.markdown("Sube una imagen para clasificar")
 
     # Subir archivo de imagen
-    uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
+    uploaded_file = st.file_uploader("Selecciona una imagen 2 (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
         # Abrir la imagen subida
