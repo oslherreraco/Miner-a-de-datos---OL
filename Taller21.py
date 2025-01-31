@@ -29,9 +29,9 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Almacenamos los hiperparámetros fuera del botón de clasificación para poder acceder a ellos después
-    model_params = None
+    # Almacenamos la predicción y los hiperparámetros en variables globales
     predicted_class = None
+    model_params = None
 
     if uploaded_file is not None:
         # Abrir la imagen subida
