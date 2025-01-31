@@ -29,7 +29,11 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
+    # Cargar el modelo
     model = load_model()
+
+    # Variable para almacenar si el modelo ya fue clasificado
+    classified = False
 
     # Si se ha subido una imagen
     if uploaded_file is not None:
@@ -40,31 +44,32 @@ def main():
         # Mostrar la imagen preprocesada
         st.image(image, caption="Imagen preprocesada")  
 
-        # Checkbox para mostrar los hiperparámetros
-        show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
-
-        # Si el checkbox está marcado, mostrar los hiperparámetros
-        if show_hyperparameters:
-            st.subheader("Hiperparámetros del Modelo:")
-            model_params = model.get_params()  # Obtener los hiperparámetros
-
-            # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
-            cleaned_model_params = [
-                (key, value if value is not None and value != "<NA>" else "-") 
-                for key, value in model_params.items()
-            ]
-            
-            # Mostrar la tabla con los hiperparámetros
-            st.table(cleaned_model_params)
-
-        # Clasificar la imagen
+        # Clasificar la imagen cuando se presiona el botón
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
             flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
             prediction = model.predict(flattened_image)  # Realizar la predicción
             predicted_class = prediction[0]  # Resultado de la clasificación
             st.markdown(f"La imagen fue clasificada como: {predicted_class}")
+            classified = True  # Marcar como clasificado
 
+        # Mostrar el checkbox para los hiperparámetros SOLO después de clasificar la imagen
+        if classified:
+            show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
+
+            # Si el checkbox está marcado, mostrar los hiperparámetros
+            if show_hyperparameters:
+                st.subheader("Hiperparámetros del Modelo:")
+                model_params = model.get_params()  # Obtener los hiperparámetros
+
+                # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
+                cleaned_model_params = [
+                    (key, value if value is not None and value != "<NA>" else "-") 
+                    for key, value in model_params.items()
+                ]
+                
+                # Mostrar la tabla con los hiperparámetros
+                st.table(cleaned_model_params)
 
 if __name__ == "__main__":
     main()
