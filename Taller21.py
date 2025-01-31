@@ -32,45 +32,38 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
+    # Cargar modelo solo una vez
+    model = load_model()
+
+    # Mostrar imagen y realizar la predicción
     if uploaded_file is not None:
-        # Abrir la imagen subida
         image = Image.open(uploaded_file)
         st.image(image, caption="Imagen subida")  # Mostrar la imagen subida
+        preprocessed_image = preprocess_image(image)  # Preprocesar la imagen
 
-        # Preprocesar la imagen antes de clasificarla
-        preprocessed_image = preprocess_image(image)  # La imagen ya tiene la forma correcta
-
-        # Mostrar la imagen procesada (opcional)
-        st.image(image, caption="Imagen preprocesada")  # Mostrar la imagen original (no tensor)
+        # Mostrar la imagen preprocesada
+        st.image(image, caption="Imagen preprocesada")  
 
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
-            model = load_model()  # Cargar el modelo
+            flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
+            prediction = model.predict(flattened_image)  # Realizar la predicción
+            predicted_class = prediction[0]  # Resultado de la clasificación
+            st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-            if model is not None:
-                # Aplanar la imagen a un vector de 784 características para modelos de scikit-learn
-                flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
+            # Si se selecciona el checkbox, mostrar los hiperparámetros
+            if show_hyperparameters:
+                st.subheader("Hiperparámetros del Modelo:")
+                model_params = model.get_params()  # Obtener los hiperparámetros
 
-                # Realizar la predicción con el modelo cargado
-                prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
+                # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
+                cleaned_model_params = [
+                    (key, value if value is not None and value != "<NA>" else "-") 
+                    for key, value in model_params.items()
+                ]
 
-                # Mostrar el resultado de la predicción
-                predicted_class = prediction[0]  # Para modelos de clasificación
-                st.markdown(f"La imagen fue clasificada como: {predicted_class}")
-
-                # Mostrar los hiperparámetros si el checkbox está marcado
-                if show_hyperparameters:
-                    st.subheader("Hiperparámetros del Modelo:")
-                    model_params = model.get_params()
-
-                    # Limpiar los valores "<NA>" y "None"
-                    cleaned_model_params = [
-                        (key, value if value is not None and value != "<NA>" else "-") 
-                        for key, value in model_params.items()
-                    ]
-
-                    # Mostrar la tabla con los hiperparámetros
-                    st.table(cleaned_model_params)
+                # Mostrar la tabla con los hiperparámetros
+                st.table(cleaned_model_params)
 
 if __name__ == "__main__":
     main()
