@@ -68,8 +68,8 @@ def main():
                     # Convertir a DataFrame para personalizar la tabla
                     df = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
 
-                    # Mostrar la tabla sin el índice
-                    st.table(df.set_index([]))  # Eliminar el índice de la tabla
+                    # Mostrar la tabla sin el índice usando st.dataframe()
+                    st.dataframe(df, use_container_width=True)  # Esta opción elimina el índice por defecto
 
 if __name__ == "__main__":
     main()
