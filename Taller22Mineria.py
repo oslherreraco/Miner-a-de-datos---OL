@@ -41,7 +41,6 @@ def predict_price(model):
     if st.button("Limpiar los datos"):
         # Limpiar todos los valores de entrada (ponerlos en 0.0)
         st.session_state.inputs = {col: 0.0 for col in columns}
-        st.experimental_rerun()  # Forzar la recarga para que los campos se actualicen inmediatamente
 
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
