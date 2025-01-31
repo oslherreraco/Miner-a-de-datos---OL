@@ -28,13 +28,11 @@ def predict_price(model):
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
     # Crear el formulario de entrada en 4 columnas
-    data_input = pd.DataFrame(columns=columns)
-    
-    # Usar `st.columns(4)` para crear 4 columnas
     cols = st.columns(4)
     
+    # Inicializar el diccionario para capturar los valores de entrada
     inputs = {}
-    
+
     with cols[0]:
         for i, col in enumerate(columns[0:7]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
@@ -43,19 +41,22 @@ def predict_price(model):
         for i, col in enumerate(columns[7:]):
             inputs[col] = st.number_input(f"{col} (Variable)", value=0.0, step=0.1)
     
-    # Mostrar la tabla de entrada
-    st.write("Valores introducidos en la tabla:")
-    st.dataframe(pd.DataFrame(inputs, index=[0]))
-    
-    # Convertir los valores introducidos en una matriz numpy
-    input_data = np.array([list(inputs.values())])
-    
-    # Predicción cuando se presiona el botón
-    if st.button("Predecir el valor de la vivienda"):
-        # Realizamos la predicción
-        prediction = model.predict(input_data)
-        # Mostrar el valor predicho
-        st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
+    # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
+    if st.button("Registrar y Predecir"):
+        # Verificar si todos los campos han sido completados
+        if any(value == 0.0 for value in inputs.values()):
+            st.warning("Por favor, ingresa todos los valores para realizar la predicción.")
+        else:
+            # Mostrar los datos ingresados
+            st.write("Valores introducidos en la tabla:")
+            st.dataframe(pd.DataFrame(inputs, index=[0]))
+
+            # Convertir los valores introducidos en una matriz numpy
+            input_data = np.array([list(inputs.values())])
+            
+            # Realizamos la predicción
+            prediction = model.predict(input_data)
+            st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
 def main():
     # Cargar el modelo
