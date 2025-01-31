@@ -31,6 +31,7 @@ def main():
 
     # Almacenamos los hiperparámetros fuera del botón de clasificación para poder acceder a ellos después
     model_params = None
+    predicted_class = None
 
     if uploaded_file is not None:
         # Abrir la imagen subida
@@ -54,7 +55,7 @@ def main():
                 # Realizar la predicción con el modelo cargado
                 prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
-                # Mostrar el resultado de la predicción
+                # Guardar la clase predicha
                 predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
