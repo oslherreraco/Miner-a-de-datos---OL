@@ -5,6 +5,7 @@ import numpy as np
 import gzip
 import pickle
 import sklearn
+import pandas as pd  # Importamos pandas para manejar las tablas
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -58,13 +59,18 @@ def main():
                 # Si el modelo es de scikit-learn, puedes mostrar los hiperparámetros
                 if hasattr(model, 'get_params'):
                     st.subheader("Hiperparámetros del Modelo:")
+
+                    # Obtener los parámetros del modelo
                     model_params = model.get_params()
 
                     # Convertir los hiperparámetros a un formato adecuado para una tabla
                     model_params_table = [(key, value) for key, value in model_params.items()]
-                    
+
+                    # Convertir a un DataFrame de pandas para tener control sobre la tabla
+                    df = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
+
                     # Mostrar la tabla con los hiperparámetros
-                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
+                    st.table(df)  # Mostrar la tabla con nombre de columnas
 
 if __name__ == "__main__":
     main()
