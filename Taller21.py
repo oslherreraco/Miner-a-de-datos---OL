@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import pandas as pd  # Usamos pandas para crear tablas personalizadas
+import sklearn
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -44,7 +44,7 @@ def main():
             st.markdown("Imagen clasificada")
             model = load_model()  # Cargar el modelo
 
-        if model is not None:
+            if model is not None:
                 # Aplanar la imagen a un vector de 784 características para modelos de scikit-learn
                 flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
 
@@ -55,22 +55,17 @@ def main():
                 predicted_class = prediction[0]  # Para modelos de clasificación
                 st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Obtener los hiperparámetros del modelo
-                model_params = model.get_params()
-            
-                # Agregar un checkbox para mostrar u ocultar los hiperparámetros
-                if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
-    
-                        st.subheader("Hiperparámetros del Modelo:")
-                
-                        # Convertir los hiperparámetros a una lista de tuplas (nombre, valor)
-                        model_params_table = [(key, value) for key, value in model_params.items()]
-        
-                                # Convertir la lista de tuplas en un DataFrame de pandas
-                        df_params = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
-        
-                                # Mostrar la tabla sin índices
-                        st.table(df_params)  # Mostrar la tabla sin número de fila
+                # Si el modelo es de scikit-learn, puedes mostrar los hiperparámetros
+                if hasattr(model, 'get_params'):
+                    st.subheader("Hiperparámetros del Modelo:")
+                    model_params = model.get_params()
+
+                    # Convertir los hiperparámetros a un formato adecuado para una tabla
+                    model_params_table = [(key, value) for key, value in model_params.items()]
+                    
+                    # Mostrar la tabla con los hiperparámetros
+                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
+
