@@ -26,14 +26,11 @@ def main():
     st.title("Clasificación de la base de datos MNIST")
     st.markdown("Sube una imagen para clasificar")
 
+    # Checkbox para mostrar los hiperparámetros
+    show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
+
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
-
-    # Estado de sesión para guardar la predicción y los hiperparámetros
-    if 'prediction' not in st.session_state:
-        st.session_state.prediction = None
-        st.session_state.model_params = None
-        st.session_state.show_checkbox = False  # Inicializamos el estado del checkbox
 
     if uploaded_file is not None:
         # Abrir la imagen subida
@@ -46,7 +43,6 @@ def main():
         # Mostrar la imagen procesada (opcional)
         st.image(image, caption="Imagen preprocesada")  # Mostrar la imagen original (no tensor)
 
-        # Botón para clasificar la imagen
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
             model = load_model()  # Cargar el modelo
@@ -58,33 +54,23 @@ def main():
                 # Realizar la predicción con el modelo cargado
                 prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
-                # Guardar la predicción y los hiperparámetros en el estado de sesión
-                st.session_state.prediction = prediction[0]  # Guardar la clase predicha
+                # Mostrar el resultado de la predicción
+                predicted_class = prediction[0]  # Para modelos de clasificación
+                st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Guardar los hiperparámetros del modelo
-                if hasattr(model, 'get_params'):
-                    st.session_state.model_params = model.get_params()
-
-                # Mostrar la predicción
-                st.markdown(f"La imagen fue clasificada como: {st.session_state.prediction}")
-
-                # Activar el checkbox después de clasificar la imagen
-                st.session_state.show_checkbox = True  # Mostrar el checkbox después de clasificar la imagen
-
-        # Mostrar el checkbox después de clasificar la imagen
-        if st.session_state.show_checkbox:
-            if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
-                if st.session_state.model_params:
+                # Mostrar los hiperparámetros si el checkbox está marcado
+                if show_hyperparameters:
                     st.subheader("Hiperparámetros del Modelo:")
-                    
-                    # Limpiar los hiperparámetros reemplazando None o <NA> por "-"
+                    model_params = model.get_params()
+
+                    # Limpiar los valores "<NA>" y "None"
                     cleaned_model_params = [
-                        (key, value if value is not None and value != "<NA>" else "-")
-                        for key, value in st.session_state.model_params.items()
+                        (key, value if value is not None and value != "<NA>" else "-") 
+                        for key, value in model_params.items()
                     ]
-                    
+
                     # Mostrar la tabla con los hiperparámetros
-                    st.table(cleaned_model_params)  # Mostrar los hiperparámetros en formato de tabla
+                    st.table(cleaned_model_params)
 
 if __name__ == "__main__":
     main()
