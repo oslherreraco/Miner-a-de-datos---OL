@@ -27,28 +27,30 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Crear una tabla editable con los nombres de las columnas de las variables
+    # Crear un DataFrame vacío con las columnas necesarias
     data_input = pd.DataFrame(columns=columns)
     
-    # Crear un formulario para la entrada de datos
-    st.write("Introduce los datos de la vivienda en la siguiente tabla:")
-    
-    # Usar st.number_input para cada celda de la tabla
+    # Usar st.number_input para capturar los valores de las variables
     for col in columns:
         data_input[col] = st.number_input(col, value=0.0, step=0.1)
 
     # Mostrar la tabla de entrada
     st.dataframe(data_input)
-    
-    # Verificar si el DataFrame tiene datos antes de continuar
+
+    # Comprobar si el DataFrame tiene al menos una fila con datos
     if data_input.isnull().values.any():
         st.warning("Por favor, completa todos los campos antes de continuar.")
         return
     
+    # Asegurarse de que hay datos en el DataFrame antes de acceder a la fila
+    if data_input.empty:
+        st.warning("Por favor, ingresa los datos para realizar la predicción.")
+        return
+
     # Convertir la tabla de entrada a un array numpy
     input_data = np.array([data_input.iloc[0].values])
 
-    # Hacer la predicción si el usuario ha introducido todos los valores
+    # Hacer la predicción si el usuario ha ingresado todos los valores
     if st.button("Predecir el valor de la vivienda"):
         prediction = model.predict(input_data)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
