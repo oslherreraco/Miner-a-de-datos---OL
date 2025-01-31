@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import pandas as pd
+import sklearn
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -29,13 +29,6 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    if 'predicted_class' not in st.session_state:
-        st.session_state.predicted_class = None  # Inicializamos el estado de la predicción
-
-    if 'model_params' not in st.session_state:
-        st.session_state.model_params = None  # Inicializamos el estado de los hiperparámetros
-
-    # Mostrar la imagen subida y hacer predicción si la imagen es cargada
     if uploaded_file is not None:
         # Abrir la imagen subida
         image = Image.open(uploaded_file)
@@ -47,6 +40,7 @@ def main():
         # Mostrar la imagen procesada (opcional)
         st.image(image, caption="Imagen preprocesada")  # Mostrar la imagen original (no tensor)
 
+        # Botón para clasificar la imagen
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
             model = load_model()  # Cargar el modelo
@@ -58,44 +52,20 @@ def main():
                 # Realizar la predicción con el modelo cargado
                 prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
-                # Guardar la clase predicha
-                st.session_state.predicted_class = prediction[0]  # Para modelos de clasificación
-                st.markdown(f"La imagen fue clasificada como: {st.session_state.predicted_class}")
+                # Mostrar el resultado de la predicción
+                predicted_class = prediction[0]  # Para modelos de clasificación
+                st.markdown(f"La imagen fue clasificada como: {predicted_class}")
 
-                # Si el modelo es de scikit-learn, puedes obtener los hiperparámetros
-                if hasattr(model, 'get_params'):
+                # Checkbox para mostrar los hiperparámetros
+                if st.checkbox("Mostrar hiperparámetros del modelo"):
+                    st.subheader("Hiperparámetros del Modelo:")
                     model_params = model.get_params()
 
                     # Convertir los hiperparámetros a un formato adecuado para una tabla
                     model_params_table = [(key, value) for key, value in model_params.items()]
-
-                    # Reemplazar <NA> o None por un guion o valor vacío
-                    cleaned_model_params = [
-                        (key, value if value is not None and value != "<NA>" else "-") 
-                        for key, value in model_params_table
-                    ]
-
-                    # Convertir a un DataFrame de pandas para tener control sobre la tabla
-                    st.session_state.model_params = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
-
-    # Checkbox para mostrar los hiperparámetros
-    if st.checkbox("Mostrar hiperparámetros del modelo"):
-        if st.session_state.model_params is not None:
-            # Estilo HTML para controlar el ancho de las columnas
-            st.markdown(
-                """
-                <style>
-                .dataframe th, .dataframe td {
-                    padding: 10px;
-                    text-align: left;
-                    width: 300px;
-                }
-                </style>
-                """, unsafe_allow_html=True
-            )
-
-            # Mostrar la tabla con estilo CSS para un ancho adecuado
-            st.write(st.session_state.model_params.to_html(index=False, escape=False), unsafe_allow_html=True)
+                    
+                    # Mostrar la tabla con los hiperparámetros
+                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
