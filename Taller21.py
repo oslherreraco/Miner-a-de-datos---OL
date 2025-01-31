@@ -81,7 +81,21 @@ def main():
     # Checkbox para mostrar los hiperparámetros
     if st.checkbox("Mostrar hiperparámetros del modelo"):
         if st.session_state.model_params is not None:
-            st.write(st.session_state.model_params)  # Mostrar la tabla con los hiperparámetros
+            # Estilo HTML para controlar el ancho de las columnas
+            st.markdown(
+                """
+                <style>
+                .dataframe th, .dataframe td {
+                    padding: 10px;
+                    text-align: left;
+                    width: 300px;
+                }
+                </style>
+                """, unsafe_allow_html=True
+            )
+
+            # Mostrar la tabla con estilo CSS para un ancho adecuado
+            st.write(st.session_state.model_params.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
