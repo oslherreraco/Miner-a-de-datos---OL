@@ -30,19 +30,23 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Crear el formulario de entrada en 4 columnas
-    cols = st.columns(4)
+    # Crear el formulario de entrada en 3 columnas
+    cols = st.columns(3)
     
     # Inicializar el diccionario para capturar los valores de entrada
     if 'inputs' not in st.session_state:
         st.session_state.inputs = {col: 0.0 for col in columns}
 
     with cols[0]:
-        for i, col in enumerate(columns[0:7]):
+        for i, col in enumerate(columns[0:5]):  # Primera columna con 5 variables
             st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
     
     with cols[1]:
-        for i, col in enumerate(columns[7:]):
+        for i, col in enumerate(columns[5:10]):  # Segunda columna con 5 variables
+            st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
+
+    with cols[2]:
+        for i, col in enumerate(columns[10:]):  # Tercera columna con 3 variables
             st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
     
     # Botón para limpiar los datos
