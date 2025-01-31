@@ -77,14 +77,14 @@ def main():
                 if st.session_state.model_params:
                     st.subheader("Hiperparámetros del Modelo:")
                     
-                    # Reemplazar <NA> por un valor más adecuado
-                    model_params_table = [
-                        (key, "No disponible" if value is None else value)  # Reemplazar None por "No disponible"
+                    # Limpiar los hiperparámetros reemplazando None o <NA> por "-"
+                    cleaned_model_params = [
+                        (key, value if value is not None and value != "<NA>" else "-")
                         for key, value in st.session_state.model_params.items()
                     ]
                     
                     # Mostrar la tabla con los hiperparámetros
-                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
+                    st.table(cleaned_model_params)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
