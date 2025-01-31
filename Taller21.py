@@ -4,6 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
+import pandas as pd  # Importamos pandas para crear la tabla personalizada
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -61,28 +62,14 @@ def main():
                     # Obtener los hiperparámetros
                     model_params = model.get_params()
 
-                    # Crear una tabla en formato HTML
-                    html_table = """
-                    <table style="border: 1px solid black; border-collapse: collapse;">
-                        <tr>
-                            <th style="border: 1px solid black; padding: 8px;">Hiperparámetro</th>
-                            <th style="border: 1px solid black; padding: 8px;">Valor</th>
-                        </tr>
-                    """
-                    
-                    # Añadir los hiperparámetros en filas
-                    for key, value in model_params.items():
-                        html_table += f"""
-                        <tr>
-                            <td style="border: 1px solid black; padding: 8px;">{key}</td>
-                            <td style="border: 1px solid black; padding: 8px;">{value}</td>
-                        </tr>
-                        """
+                    # Convertir los hiperparámetros a un formato adecuado para una tabla
+                    model_params_table = [(key, value) for key, value in model_params.items()]
 
-                    html_table += "</table>"
+                    # Convertir a DataFrame para personalizar la tabla
+                    df = pd.DataFrame(model_params_table, columns=["Hiperparámetro", "Valor"])
 
-                    # Mostrar la tabla de HTML en Streamlit
-                    st.markdown(html_table, unsafe_allow_html=True)
+                    # Mostrar la tabla sin el índice
+                    st.table(df.set_index([]))  # Eliminar el índice de la tabla
 
 if __name__ == "__main__":
     main()
