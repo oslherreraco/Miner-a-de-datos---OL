@@ -78,7 +78,7 @@ def main():
                     # Mostrar un checkbox para que el usuario decida si quiere ver los hiperparámetros
                     show_params = st.checkbox("Mostrar hiperparámetros del modelo")
 
-                    if show_params:
+                if show_params:
                         # Mostrar la tabla con los hiperparámetros cuando el checkbox esté marcado
                         st.table(df)  # Mostrar la tabla con nombre de columnas
 
