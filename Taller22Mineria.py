@@ -37,10 +37,6 @@ def predict_price(model):
         for i, col in enumerate(columns[7:]):
             st.session_state.inputs[col] = st.number_input(f"{col} (Variable)", value=st.session_state.inputs[col], step=0.1)
     
-    # Botón para limpiar los datos
-    if st.button("Limpiar los datos"):
-        # Limpiar todos los valores de entrada (ponerlos en 0.0)
-        st.session_state.inputs = {col: 0.0 for col in columns}
 
     # Mostrar la tabla de entrada después de que el usuario ingrese todos los valores
     if st.button("Registrar y Predecir"):
