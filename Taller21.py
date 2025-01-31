@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import gzip
 import pickle
-import sklearn
+import pandas as pd
 
 # Función para preprocesar la imagen
 def preprocess_image(image):
@@ -29,47 +29,73 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
-    # Cargar el modelo
-    model = load_model()
+    if 'predicted_class' not in st.session_state:
+        st.session_state.predicted_class = None  # Inicializamos el estado de la predicción
 
-    # Variable para almacenar si el modelo ya fue clasificado
-    classified = False
+    if 'model_params' not in st.session_state:
+        st.session_state.model_params = None  # Inicializamos el estado de los hiperparámetros
 
-    # Si se ha subido una imagen
+    # Mostrar la imagen subida y hacer predicción si la imagen es cargada
     if uploaded_file is not None:
+        # Abrir la imagen subida
         image = Image.open(uploaded_file)
         st.image(image, caption="Imagen subida")  # Mostrar la imagen subida
-        preprocessed_image = preprocess_image(image)  # Preprocesar la imagen
 
-        # Mostrar la imagen preprocesada
-        st.image(image, caption="Imagen preprocesada")  
+        # Preprocesar la imagen antes de clasificarla
+        preprocessed_image = preprocess_image(image)  # La imagen ya tiene la forma correcta
 
-        # Clasificar la imagen cuando se presiona el botón
+        # Mostrar la imagen procesada (opcional)
+        st.image(image, caption="Imagen preprocesada")  # Mostrar la imagen original (no tensor)
+
         if st.button("Clasificar imagen"):
             st.markdown("Imagen clasificada")
-            flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
-            prediction = model.predict(flattened_image)  # Realizar la predicción
-            predicted_class = prediction[0]  # Resultado de la clasificación
-            st.markdown(f"La imagen fue clasificada como: {predicted_class}")
-            classified = True  # Marcar como clasificado
+            model = load_model()  # Cargar el modelo
 
-        # Mostrar el checkbox para los hiperparámetros SOLO después de clasificar la imagen
-        if classified:
-            show_hyperparameters = st.checkbox("Mostrar Hiperparámetros del modelo")
+            if model is not None:
+                # Aplanar la imagen a un vector de 784 características para modelos de scikit-learn
+                flattened_image = preprocessed_image.reshape(1, -1)  # Convertir la imagen en un vector de 784 características
 
-            # Si el checkbox está marcado, mostrar los hiperparámetros
-            if show_hyperparameters:
-                st.subheader("Hiperparámetros del Modelo:")
-                model_params = model.get_params()  # Obtener los hiperparámetros
+                # Realizar la predicción con el modelo cargado
+                prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
-                # Limpiar los valores "<NA>" y "None" para mostrarlos como "-"
-                cleaned_model_params = [
-                    (key, value if value is not None and value != "<NA>" else "-") 
-                    for key, value in model_params.items()
-                ]
-                
-                # Mostrar la tabla con los hiperparámetros
-                st.table(cleaned_model_params)
+                # Guardar la clase predicha
+                st.session_state.predicted_class = prediction[0]  # Para modelos de clasificación
+                st.markdown(f"La imagen fue clasificada como: {st.session_state.predicted_class}")
+
+                # Si el modelo es de scikit-learn, puedes obtener los hiperparámetros
+                if hasattr(model, 'get_params'):
+                    model_params = model.get_params()
+
+                    # Convertir los hiperparámetros a un formato adecuado para una tabla
+                    model_params_table = [(key, value) for key, value in model_params.items()]
+
+                    # Reemplazar <NA> o None por un guion o valor vacío
+                    cleaned_model_params = [
+                        (key, value if value is not None and value != "<NA>" else "-") 
+                        for key, value in model_params_table
+                    ]
+
+                    # Convertir a un DataFrame de pandas para tener control sobre la tabla
+                    st.session_state.model_params = pd.DataFrame(cleaned_model_params, columns=["Hiperparámetro", "Valor"])
+
+    # Checkbox para mostrar los hiperparámetros
+    if st.checkbox("Mostrar hiperparámetros del modelo"):
+        if st.session_state.model_params is not None:
+            # Estilo HTML para controlar el ancho de las columnas
+            st.markdown(
+                """
+                <style>
+                .dataframe th, .dataframe td {
+                    padding: 10px;
+                    text-align: left;
+                    width: 300px;
+                }
+                </style>
+                """, unsafe_allow_html=True
+            )
+
+            # Mostrar la tabla con estilo CSS para un ancho adecuado
+            st.write(st.session_state.model_params.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
