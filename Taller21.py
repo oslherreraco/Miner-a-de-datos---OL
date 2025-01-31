@@ -29,6 +29,11 @@ def main():
     # Subir archivo de imagen
     uploaded_file = st.file_uploader("Selecciona una imagen (PNG, JPG, JPEG):", type=["jpg", "png", "jpeg"])
 
+    # Estado de sesión para guardar la predicción y los hiperparámetros
+    if 'prediction' not in st.session_state:
+        st.session_state.prediction = None
+        st.session_state.model_params = None
+
     if uploaded_file is not None:
         # Abrir la imagen subida
         image = Image.open(uploaded_file)
@@ -52,20 +57,24 @@ def main():
                 # Realizar la predicción con el modelo cargado
                 prediction = model.predict(flattened_image)  # La imagen ya tiene la forma correcta
 
-                # Mostrar el resultado de la predicción
-                predicted_class = prediction[0]  # Para modelos de clasificación
-                st.markdown(f"La imagen fue clasificada como: {predicted_class}")
+                # Guardar la predicción y los hiperparámetros en el estado de sesión
+                st.session_state.prediction = prediction[0]  # Guardar la clase predicha
 
-                # Checkbox para mostrar los hiperparámetros
-                if st.checkbox("Mostrar hiperparámetros del modelo"):
-                    st.subheader("Hiperparámetros del Modelo:")
-                    model_params = model.get_params()
+                # Guardar los hiperparámetros del modelo
+                if hasattr(model, 'get_params'):
+                    st.session_state.model_params = model.get_params()
 
-                    # Convertir los hiperparámetros a un formato adecuado para una tabla
-                    model_params_table = [(key, value) for key, value in model_params.items()]
-                    
-                    # Mostrar la tabla con los hiperparámetros
-                    st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
+                # Mostrar la predicción
+                st.markdown(f"La imagen fue clasificada como: {st.session_state.prediction}")
+
+        # Checkbox para mostrar los hiperparámetros
+        if st.checkbox("Mostrar hiperparámetros del modelo", value=False):
+            if st.session_state.model_params:
+                st.subheader("Hiperparámetros del Modelo:")
+                model_params_table = [(key, value) for key, value in st.session_state.model_params.items()]
+                
+                # Mostrar la tabla con los hiperparámetros
+                st.table(model_params_table)  # Mostrar los hiperparámetros en formato de tabla
 
 if __name__ == "__main__":
     main()
