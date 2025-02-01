@@ -55,4 +55,26 @@ def predict_price(model):
     if st.button("Siguiente"):
         # Avanzar al siguiente paso
         if st.session_state.step < len(columns) - 1:
-         
+            st.session_state.step += 1
+        else:
+            # Realizar la predicción al llegar al último paso
+            input_data = [st.session_state[f"input_{col}"] for col in columns]
+            input_array = np.array([input_data])
+            prediction = model.predict(input_array)
+            st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
+            
+            # Resetear el flujo para permitir nuevas predicciones
+            st.session_state.step = 0
+            for col in columns:
+                del st.session_state[f"input_{col}"]  # Eliminar los valores guardados
+
+def main():
+    # Cargar el modelo
+    model = load_model()
+
+    # Ejecutar la predicción
+    predict_price(model)
+
+# Si el script es ejecutado directamente, se llama a main()
+if __name__ == "__main__":
+    main()
