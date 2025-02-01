@@ -26,7 +26,12 @@ def predict_price(model):
         st.session_state.step = 0  # Indicar el paso actual (empezar en 0)
     
     if "input_data" not in st.session_state:
-        st.session_state.input_data = {col: 0.0 for col in columns}  # Inicializar todos los valores a 0.0
+        st.session_state.input_data = {col: None for col in columns}  # Inicializar todos los valores a None
+
+    # Mostrar los campos que ya han sido diligenciados
+    for i in range(st.session_state.step):
+        col = columns[i]
+        st.write(f"{col}: {st.session_state.input_data[col]}")  # Mostrar los valores ya ingresados
 
     # Mostrar el campo de entrada para la variable correspondiente al paso actual
     current_col = columns[st.session_state.step]
@@ -52,7 +57,7 @@ def predict_price(model):
             
             # Resetear el flujo para permitir nuevas predicciones
             st.session_state.step = 0
-            st.session_state.input_data = {col: 0.0 for col in columns}
+            st.session_state.input_data = {col: None for col in columns}
 
 def main():
     # Cargar el modelo
