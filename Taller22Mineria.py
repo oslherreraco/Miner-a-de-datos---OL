@@ -31,7 +31,10 @@ def predict_price(model):
 
     for col in columns:
         # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
-        input_value = st.number_input(f"Ingrese el valor para {col}", value=st.session_state[f'input_{col}'])
+        input_value = st.number_input(f"Ingrese el valor para {col}", 
+                                      value=st.session_state[f'input_{col}'],
+                                      step=0.01,  # Paso pequeño para entradas precisas
+                                      format="%.2f")  # Limitar la cantidad de decimales mostrados
         
         # Guardamos el valor en session_state
         st.session_state[f'input_{col}'] = input_value
