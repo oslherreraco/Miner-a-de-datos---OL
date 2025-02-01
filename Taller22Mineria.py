@@ -26,23 +26,31 @@ def predict_price(model):
         if f"input_{col}" not in st.session_state:
             st.session_state[f"input_{col}"] = 0.0  # Inicializar cada variable individualmente con valor 0.0
 
-    # Mostrar campos de entrada con ceros por defecto
+    # Organizar la entrada en forma de tabla con 6 columnas
     input_data = {}
 
-    for col in columns:
-        # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
-        input_value = st.text_input(f"Ingrese el valor para {col}", 
-                                    value=str(st.session_state[f'input_{col}']))  # Como texto para evitar botones
-        
-        # Convertir el valor ingresado a número (si es válido)
-        try:
-            input_value = float(input_value) if input_value else 0.0  # Usar 0.0 si no se ingresa valor
-        except ValueError:
-            input_value = 0.0  # En caso de que no se ingrese un número válido
+    cols = st.columns(6)  # Crear 6 columnas
 
-        # Guardamos el valor en session_state
-        st.session_state[f'input_{col}'] = input_value
-        input_data[col] = input_value  # Guardar el valor en el diccionario de entrada
+    for i, col in enumerate(columns):
+        # Determinar en qué columna se debe colocar la variable y su valor
+        column_index = i % 3  # Alterna entre las 3 primeras columnas para nombres y las otras 3 para valores
+
+        if column_index == 0:
+            cols[column_index].write(f"**{col}**")  # Mostrar el nombre de la variable
+        else:
+            # Mostrar el campo de entrada solo en las columnas para los valores
+            input_value = cols[column_index].text_input(f"Ingrese el valor para {col}", 
+                                                       value=str(st.session_state[f'input_{col}']))  # Como texto para evitar botones
+
+            # Convertir el valor ingresado a número (si es válido)
+            try:
+                input_value = float(input_value) if input_value else 0.0  # Usar 0.0 si no se ingresa valor
+            except ValueError:
+                input_value = 0.0  # En caso de que no se ingrese un número válido
+
+            # Guardamos el valor en session_state
+            st.session_state[f'input_{col}'] = input_value
+            input_data[col] = input_value  # Guardar el valor en el diccionario de entrada
 
     # Botón "Predecir"
     if st.button("Predecir"):
