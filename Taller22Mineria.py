@@ -29,18 +29,18 @@ def predict_price(model):
     # Organizar la entrada en forma de tabla con 6 columnas
     input_data = {}
 
-    cols = st.columns(6)  # Crear 6 columnas
+    # Número de columnas que queremos
+    num_columns = 3
 
-    for i, col in enumerate(columns):
-        # Determinar en qué columna se debe colocar la variable y su valor
-        column_index = i % 3  # Alterna entre las 3 primeras columnas para nombres y las otras 3 para valores
-
-        if column_index == 0:
-            cols[column_index].write(f"**{col}**")  # Mostrar el nombre de la variable
-        else:
-            # Mostrar el campo de entrada solo en las columnas para los valores
-            input_value = cols[column_index].text_input(f"Ingrese el valor para {col}", 
-                                                       value=str(st.session_state[f'input_{col}']))  # Como texto para evitar botones
+    # Crear un número de filas necesario según el número de variables
+    for i in range(0, len(columns), num_columns):
+        # Crear 3 columnas para cada fila
+        cols = st.columns(num_columns)
+        
+        for j, col in enumerate(columns[i:i+num_columns]):
+            # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
+            input_value = cols[j].text_input(f"Ingrese el valor para {col}", 
+                                            value=str(st.session_state[f'input_{col}']))  # Como texto para evitar botones
 
             # Convertir el valor ingresado a número (si es válido)
             try:
