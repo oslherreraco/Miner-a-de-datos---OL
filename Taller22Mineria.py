@@ -30,14 +30,12 @@ def predict_price(model):
     input_data = {}
 
     for col in columns:
-        input_value = st.number_input(f"Ingrese el valor para {col}", value=float(st.session_state.get(f'input_{col}', 0.0)))
+        # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
+        input_value = st.number_input(f"Ingrese el valor para {col}", value=st.session_state[f'input_{col}'])
         
-        # Validar y guardar el valor
-        if input_value != "":
-            st.session_state[f'input_{col}'] = input_value
-            input_data[col] = input_value  # Guardar el valor en el diccionario de entrada
-        else:
-            input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
+        # Guardamos el valor en session_state
+        st.session_state[f'input_{col}'] = input_value
+        input_data[col] = input_value  # Guardar el valor en el diccionario de entrada
 
     # Botón "Predecir"
     if st.button("Predecir"):
