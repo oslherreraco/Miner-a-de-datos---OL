@@ -25,19 +25,16 @@ def predict_price(model):
     if "step" not in st.session_state:
         st.session_state.step = 0  # Indicar el paso actual (empezar en 0)
     
-    if "input_data" not in st.session_state:
-        st.session_state.input_data = {col: None for col in columns}  # Inicializar todos los valores a None
-
     # Mostrar los campos que ya han sido diligenciados
     for i in range(st.session_state.step):
         col = columns[i]
-        st.write(f"{col}: {st.session_state.input_data[col]}")  # Mostrar los valores ya ingresados
+        st.write(f"{col}: {st.session_state[f'input_{col}']}")  # Mostrar los valores ya ingresados
 
     # Mostrar el campo de entrada para la variable correspondiente al paso actual
     current_col = columns[st.session_state.step]
     
     # Obtener el valor previamente ingresado o mantener "" si es la primera vez
-    previous_value = st.session_state.input_data[current_col] if st.session_state.input_data[current_col] is not None else ""
+    previous_value = st.session_state.get(f"input_{current_col}", "")
     
     # Crear el campo de entrada con el valor previo (si lo hay)
     input_value = st.text_input(f"Ingrese el valor para {current_col}", value=str(previous_value))
@@ -45,7 +42,7 @@ def predict_price(model):
     # Validar que la entrada sea un número
     if input_value != "":
         try:
-            st.session_state.input_data[current_col] = float(input_value)  # Guardar el valor ingresado
+            st.session_state[f"input_{current_col}"] = float(input_value)  # Guardar el valor ingresado
         except ValueError:
             st.warning(f"Por favor ingrese un valor numérico válido para {current_col}.")
     
@@ -56,13 +53,15 @@ def predict_price(model):
             st.session_state.step += 1
         else:
             # Realizar la predicción al llegar al último paso
-            input_array = np.array([list(st.session_state.input_data.values())])
+            input_data = [st.session_state[f"input_{col}"] for col in columns]
+            input_array = np.array([input_data])
             prediction = model.predict(input_array)
             st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
             
             # Resetear el flujo para permitir nuevas predicciones
             st.session_state.step = 0
-            st.session_state.input_data = {col: None for col in columns}
+            for col in columns:
+                del st.session_state[f"input_{col}"]  # Eliminar los valores guardados
 
 def main():
     # Cargar el modelo
