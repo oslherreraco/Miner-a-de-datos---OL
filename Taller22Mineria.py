@@ -35,7 +35,12 @@ def predict_price(model):
 
     # Mostrar el campo de entrada para la variable correspondiente al paso actual
     current_col = columns[st.session_state.step]
-    input_value = st.text_input(f"Ingrese el valor para {current_col}", value=str(st.session_state.input_data[current_col]))
+    
+    # Obtener el valor previamente ingresado o mantener None si es la primera vez
+    previous_value = st.session_state.input_data[current_col] if st.session_state.input_data[current_col] is not None else ""
+    
+    # Crear el campo de entrada con el valor previo (si lo hay)
+    input_value = st.text_input(f"Ingrese el valor para {current_col}", value=str(previous_value))
 
     # Validar que la entrada sea un número
     try:
