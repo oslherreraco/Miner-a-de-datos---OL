@@ -21,46 +21,29 @@ def predict_price(model):
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
-    # Crear el formulario de entrada en 4 columnas
-    cols = st.columns(4)
-
     # Inicializar las variables en st.session_state si no están presentes
     for col in columns:
         if f"input_{col}" not in st.session_state:
             st.session_state[f"input_{col}"] = 0.0  # Inicializar cada variable individualmente con valor 0.0
 
-    # Mostrar campos de entrada con ceros por defecto
+    # Inicializar el diccionario de entradas
     input_data = {}
 
-    with cols[0]:
-        for i, col in enumerate(columns[0:7]):
-            # Usar st.text_input para permitir la entrada de datos como texto
-            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.get(f'input_{col}', 0.0)))
-            # Validar que la entrada sea un número
-            try:
-                input_data[col] = float(input_value) if input_value else 0.0
-                # Guardar el valor en session_state de manera individual
-                st.session_state[f'input_{col}'] = input_data[col]
-            except ValueError:
-                st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
-                input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
-
-    with cols[1]:
-        for i, col in enumerate(columns[7:]):
-            # Usar st.text_input para permitir la entrada de datos como texto
-            input_value = st.text_input(f"{col} (Variable)", value=str(st.session_state.get(f'input_{col}', 0.0)))
-            # Validar que la entrada sea un número
-            try:
-                input_data[col] = float(input_value) if input_value else 0.0
-                # Guardar el valor en session_state de manera individual
-                st.session_state[f'input_{col}'] = input_data[col]
-            except ValueError:
-                st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
-                input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
+    # Mostrar los campos de entrada uno por uno en orden secuencial
+    for i, col in enumerate(columns):
+        input_value = st.text_input(f"Ingrese el valor para {col} (Variable {i+1})", value=str(st.session_state.get(f'input_{col}', 0.0)))
+        
+        # Validar que la entrada sea un número
+        try:
+            input_data[col] = float(input_value) if input_value else 0.0
+            # Guardar el valor en session_state de manera individual
+            st.session_state[f'input_{col}'] = input_data[col]
+        except ValueError:
+            st.warning(f"Por favor ingrese un valor numérico válido para {col}.")
+            input_data[col] = 0.0  # Asignar un valor por defecto si no es válido
 
     # Mostrar los datos introducidos en una tabla
     st.write("Valores introducidos en la tabla:")
-    # Crear un DataFrame a partir del diccionario con las entradas
     input_df = pd.DataFrame([input_data])  # Crear un DataFrame desde el diccionario de entradas
     st.dataframe(input_df)
 
@@ -90,3 +73,4 @@ def main():
 # Si el script es ejecutado directamente, se llama a main()
 if __name__ == "__main__":
     main()
+
