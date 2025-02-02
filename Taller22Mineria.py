@@ -61,12 +61,40 @@ def predict_price(model):
         prediction = model.predict(input_array)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
+  # Mostrar los hiperparámetros si el checkbox está marcado
+    if st.checkbox("Mostrar hiperparámetros del modelo"):
+        # Obtener los hiperparámetros del modelo
+        model_params = model.get_params()  # Para un modelo de sklearn, como LinearRegression
+        
+        # Convertir los hiperparámetros a un DataFrame para mostrarlos de manera ordenada
+        df_params = pd.DataFrame(list(model_params.items()), columns=['Hiperparámetro', 'Valor'])
+
+        # Estilo HTML para controlar el ancho de las columnas
+        st.markdown(
+            """
+            <style>
+            .dataframe th, .dataframe td {
+                padding: 10px;
+                text-align: left;
+                width: 300px;
+            }
+            </style>
+            """, unsafe_allow_html=True
+        )
+        
+        # Mostrar la tabla con los hiperparámetros
+        st.write(df_params.to_html(index=False, escape=False), unsafe_allow_html=True)
+
+
+
 def main():
     # Cargar el modelo
     model = load_model()
 
     # Ejecutar la predicción
     predict_price(model)
+
+
 
 # Si el script es ejecutado directamente, se llama a main()
 if __name__ == "__main__":
