@@ -6,7 +6,7 @@ import pandas as pd
 
 # Cargar el modelo entrenado
 def load_model():
-    with gzip.open('model_trained_regressor.pkl.gz', 'rb') as f:
+    with gzip.open('model_trained_regressor1.pkl.gz', 'rb') as f:
         model = pickle.load(f)
     return model
 
