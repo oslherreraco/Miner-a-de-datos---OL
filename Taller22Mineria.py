@@ -17,6 +17,10 @@ columns = ["CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS", "RAD", "TAX
 def predict_price(model):
     # Título de la app
     st.title('Predicción del valor de una vivienda')
+
+    if st.sidebar.checkbox("## Ver análisis del modelo"):
+       st.write("### Análisis de hiperparámetros")
+       st.markdown("""XXXXX""")
     
     # Explicación breve
     st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
