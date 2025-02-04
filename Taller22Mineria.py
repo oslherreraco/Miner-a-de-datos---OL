@@ -39,7 +39,7 @@ def predict_price(model):
     # Título de la app
     st.title('Predicción del valor de una vivienda en Boston')
 
-    if st.checkbox("##### Ver análisis del modelo"):
+    if st.checkbox("# Ver análisis del modelo"):
         st.write("#### Análisis de hiperparámetros")
         st.markdown("""La búsqueda del mejor modelo regresión para la estimación del valor medio de una vivienda en Boston, empleando la información recopilada en la base de datos boston_housing, se realizó probando los métodos de ElasticNet y diferentes opciones de KernelRidge. Cabe recordar que el primer caso reúne, a su vez, la posibilidad de probar regresiones Lasso y Ridge, es decir se emplean conjuntamente l1 y l2. La búsqueda del mejor modelos contempla las variables en su dimensión original sin escalar, así como también aplicando técnicas de escalado como normalización (StandarScaler) o redimensionando en función de mínimos y máximos (MinMaxScaler)
 
