@@ -102,7 +102,7 @@ def predict_price(model):
         
         # Realizamos la predicción
         prediction = model.predict(input_array)
-        st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.4f}")
+        st.write(f"### El valor estimado de la vivienda es: ${prediction[0]:,.4f}")
 
     # Mostrar los hiperparámetros si el checkbox está marcado
     if st.checkbox("Mostrar hiperparámetros del modelo"):
