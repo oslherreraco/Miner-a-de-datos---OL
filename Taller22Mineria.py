@@ -30,6 +30,10 @@ column_types = {
     "LSTAT": "Porcentaje de población de bajos ingresos (numérico real)"
 }
 
+# Categorías disponibles para las variables categóricas
+chas_options = [0, 1]  # CHAS solo puede ser 0 o 1
+rad_options = list(range(1, 25))  # Suponiendo que RAD es un índice con valores entre 1 y 24
+
 # Crear una función que construya la interfaz y haga la predicción
 def predict_price(model):
     # Título de la app
@@ -60,12 +64,26 @@ def predict_price(model):
         cols = st.columns(num_columns)
         
         for j, col in enumerate(columns[i:i+num_columns]):
-            # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
-            input_value = cols[j].text_input(
-                f"Ingrese el valor para {col}",
-                value=str(st.session_state[f'input_{col}']),  # Como texto para evitar botones
-                help=column_types[col]  # Mostrar el tipo de la variable
-            )
+            # Usamos un selectbox para CHAS y RAD, y text_input para el resto de las variables
+            if col == "CHAS":
+                input_value = cols[j].selectbox(
+                    f"Ingrese el valor para {col} (0 o 1)", 
+                    options=chas_options,
+                    help=column_types[col]
+                )
+            elif col == "RAD":
+                input_value = cols[j].selectbox(
+                    f"Ingrese el valor para {col} (1-24)", 
+                    options=rad_options,
+                    help=column_types[col]
+                )
+            else:
+                # Para otras variables numéricas, seguimos usando text_input
+                input_value = cols[j].text_input(
+                    f"Ingrese el valor para {col}",
+                    value=str(st.session_state[f'input_{col}']),  # Como texto para evitar botones
+                    help=column_types[col]  # Mostrar el tipo de la variable
+                )
 
             # Convertir el valor ingresado a número (si es válido)
             try:
@@ -84,7 +102,7 @@ def predict_price(model):
         
         # Realizamos la predicción
         prediction = model.predict(input_array)
-        st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
+        st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.4f}")
 
     # Mostrar los hiperparámetros si el checkbox está marcado
     if st.checkbox("Mostrar hiperparámetros del modelo"):
