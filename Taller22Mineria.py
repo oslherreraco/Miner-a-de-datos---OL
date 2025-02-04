@@ -19,7 +19,7 @@ def predict_price(model):
     st.title('Predicción del valor de una vivienda')
 
     if st.checkbox("## Ver análisis del modelo"):
-       st.write("### Análisis de hiperparámetros")
+       st.write("#### Análisis de hiperparámetros")
        st.markdown("""XXXXX""")
     
     # Explicación breve
