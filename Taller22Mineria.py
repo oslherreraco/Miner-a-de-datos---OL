@@ -24,7 +24,7 @@ def predict_price(model):
     
     # Explicación breve
     st.write("#### Datos de la vivienda")
-    st.write("Introduce los datos de la vivienda para estimar su precio promedio.", color='red')
+    st.write("Introduce los datos de la vivienda para estimar su precio promedio.")
     
     # Inicializar las variables en st.session_state si no están presentes
     for col in columns:
