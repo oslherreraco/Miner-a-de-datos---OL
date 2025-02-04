@@ -106,6 +106,7 @@ def predict_price(model):
 
     # Mostrar los hiperparámetros si el checkbox está marcado
     if st.checkbox("Mostrar hiperparámetros del modelo"):
+        st.write("#### Hiperparámetros del modelo")
         # Obtener los hiperparámetros del modelo
         model_params = model.get_params()  # Para un modelo de sklearn, como LinearRegression
         
