@@ -16,7 +16,7 @@ def preprocess_image(image):
 
 # Función para cargar el modelo
 def load_model():
-    filename = "model_trained_classifier3.pkl.gz"  # Asegúrate de tener el modelo comprimido en .gz
+    filename = "model_trained_classifier.pkl.gz"  # Asegúrate de tener el modelo comprimido en .gz
     with gzip.open(filename, 'rb') as f:
         model = pickle.load(f)
     return model
