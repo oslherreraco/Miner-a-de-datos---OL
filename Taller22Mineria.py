@@ -41,7 +41,20 @@ def predict_price(model):
 
     if st.checkbox("## Ver análisis del modelo"):
         st.write("#### Análisis de hiperparámetros")
-        st.markdown("""XXXXX""")
+        st.markdown("""La búsqueda del mejor modelo regresión para la estimación del valor medio de una vivienda en Boston, empleando la información recopilada en la base de datos boston_housing, se realizó probando los métodos de ElasticNet y diferentes opciones de KernelRidge. Cabe recordar que el primer caso reúne, a su vez, la posibilidad de probar regresiones Lasso y Ridge, es decir se emplean conjuntamente l1 y l2. La búsqueda del mejor modelos contempla las variables en su dimensión original sin escalar, así como también aplicando técnicas de escalado como normalización (StandarScaler) o redimensionando en función de mínimos y máximos (MinMaxScaler)
+
+Para ElasticNet se probaron valores de l1 desde 0,1 a 1,0 para considerar la posibilidad de “apagado” de determinada regresión (Lasso o Ridge), además de diferentes combinaciones para la selección de variables. Igualmente, se probaron valores de alpha que condicionan la dimensión de los coeficientes del modelo para evitar su sobreajuste. En cuanto a KernelRidge se probaron opciones de alpha, que en este caso se traduce en penalización para ajustar el modelo, con valores entre 0,1 y 100. Adicionalmente se probaron los siguientes  kernels que determinan transformación de datos a espacios de mayor dimensionalidad que facilitan la estimación del modelo de regresión buscado: lineal, polinomial, Radial Basis Fuction (rbf) y sigmoide.
+
+Con esta información el mejor modelo obtenido fue evaluado con el menor valor absoluto de error definido como MAE como una medida del error de predicción expresa en las mismas unidades de la variable objetivo. Se obtiene que el mejor modelo tiene un MAE de 2,6156 miles de dólares, según los resultados en el conjunto de prueba, es decir, que los precios medios de vivienda predichos pueden presentar errores de estimación medios de este valor en ambos sentidos, condición que debe tenerse en cuenta al momento de realizar las interpretaciones respectivas. 
+
+Este mejor modelo de regresión encontrado corresponde al método KernelRdige, específicamente empleando un kernel gaussiano RBF (Radial Basis Function) o también denominado exponencial que permite llevar los datos sucesivamente a espacios o dimensiones mayores y de esta forma optimizar la estimación del modelo de regresión, particularmente facilitando la interpretabilidad de las variables. 
+
+La obtención de este modelo parte de variables escaladas como se observa del hiperparámetro correspondiente, StandarScaler, que indica que normalizar las variables, e decir, llevarlas a un rango de 0 a 1, permite, por una parte, controlar la dimensionalidad evitando impactos excesivos de alguna de las variables y, por otro lado, encontrar mejores coeficientes para predicciones más acertadas. 
+
+El alpha obtenido fue de 0,1 el cual es el valor más bajo entre las opciones probadas y significa una penalización muy baja; en otras palabras, puede decirse que el modelo ignora pocos valores en el entrenamiento y por lo tanto puede ajustarse mejor a los dato observados, aunque con riesgo de sobreajuste.
+
+Por último, se advierte que se presentan los hiperparámetros, que no fueron probados, de coeficiente (coef) y grado (degree), pero dado que el mejor modelo obtenido corresponde un kernel rbf, estos conceptos pierden relevancia para la estimación y pueden ignorarse.
+""")
     
     # Explicación breve
     st.write("#### Datos de la vivienda")
