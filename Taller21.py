@@ -68,7 +68,7 @@ def main():
 
                 # Guardar la clase predicha
                 st.session_state.predicted_class = prediction[0]  # Para modelos de clasificación
-                st.markdown(f"La imagen fue clasificada como: {st.session_state.predicted_class}")
+                st.markdown(f"#### La imagen fue clasificada como: {st.session_state.predicted_class}")
 
                 # Si el modelo es de scikit-learn, puedes obtener los hiperparámetros
                 if hasattr(model, 'get_params'):
