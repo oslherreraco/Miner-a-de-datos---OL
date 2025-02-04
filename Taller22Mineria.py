@@ -13,14 +13,31 @@ def load_model():
 # Nombres de las columnas (según el dataset boston_housing)
 columns = ["CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS", "RAD", "TAX", "PTRATIO", "B", "LSTAT"]
 
+# Tipos de variables (ahora incluye precisión sobre si son enteras, reales o categóricas ordinales)
+column_types = {
+    "CRIM": "Tasa de criminalidad por cada 100,000 habitantes (numérico real)",
+    "ZN": "Proporción de terrenos residenciales zonificados para grandes parcelas (numérico real)",
+    "INDUS": "Porcentaje de terrenos comerciales (numérico real)",
+    "CHAS": "Variable binaria (0: No, 1: Sí) para la proximidad al río Charles (entero)",
+    "NOX": "Concentración de óxidos de nitrógeno (ppm) (numérico real)",
+    "RM": "Número promedio de habitaciones (numérico real)",
+    "AGE": "Proporción de viviendas construidas antes de 1940 (numérico real)",
+    "DIS": "Distancia a centros de empleo (numérico real)",
+    "RAD": "Índice de accesibilidad a autopistas radiales (categórica ordinal)",
+    "TAX": "Tasa de impuestos sobre propiedades (numérico entero)",
+    "PTRATIO": "Relación alumno-profesor (numérico real)",
+    "B": "Proporción de personas de origen afroamericano (numérico real)",
+    "LSTAT": "Porcentaje de población de bajos ingresos (numérico real)"
+}
+
 # Crear una función que construya la interfaz y haga la predicción
 def predict_price(model):
     # Título de la app
     st.title('Predicción del valor de una vivienda en Boston')
 
     if st.checkbox("## Ver análisis del modelo"):
-       st.write("#### Análisis de hiperparámetros")
-       st.markdown("""XXXXX""")
+        st.write("#### Análisis de hiperparámetros")
+        st.markdown("""XXXXX""")
     
     # Explicación breve
     st.write("#### Datos de la vivienda")
@@ -37,15 +54,18 @@ def predict_price(model):
     # Número de columnas que queremos
     num_columns = 3
 
-    # Crear un número de filas necesario según el número de variables
+    # Crear número de filas necesario según el número de variables
     for i in range(0, len(columns), num_columns):
         # Crear 3 columnas para cada fila
         cols = st.columns(num_columns)
         
         for j, col in enumerate(columns[i:i+num_columns]):
             # Obtener el valor de session_state, si no existe, se asigna el valor 0.0
-            input_value = cols[j].text_input(f"Ingrese el valor para {col}", 
-                                            value=str(st.session_state[f'input_{col}']))  # Como texto para evitar botones
+            input_value = cols[j].text_input(
+                f"Ingrese el valor para {col}",
+                value=str(st.session_state[f'input_{col}']),  # Como texto para evitar botones
+                help=column_types[col]  # Mostrar el tipo de la variable
+            )
 
             # Convertir el valor ingresado a número (si es válido)
             try:
@@ -66,7 +86,7 @@ def predict_price(model):
         prediction = model.predict(input_array)
         st.write(f"El valor estimado de la vivienda es: ${prediction[0]:,.2f}")
 
-  # Mostrar los hiperparámetros si el checkbox está marcado
+    # Mostrar los hiperparámetros si el checkbox está marcado
     if st.checkbox("Mostrar hiperparámetros del modelo"):
         # Obtener los hiperparámetros del modelo
         model_params = model.get_params()  # Para un modelo de sklearn, como LinearRegression
@@ -91,14 +111,12 @@ def predict_price(model):
         st.write(df_params.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 
-
 def main():
     # Cargar el modelo
     model = load_model()
 
     # Ejecutar la predicción
     predict_price(model)
-
 
 
 # Si el script es ejecutado directamente, se llama a main()
