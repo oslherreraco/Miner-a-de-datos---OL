@@ -18,7 +18,7 @@ def predict_price(model):
     # Título de la app
     st.title('Predicción del valor de una vivienda')
 
-    if st.sidebar.checkbox("## Ver análisis del modelo"):
+    if st.checkbox("## Ver análisis del modelo"):
        st.write("### Análisis de hiperparámetros")
        st.markdown("""XXXXX""")
     
