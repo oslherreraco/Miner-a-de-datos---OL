@@ -24,6 +24,14 @@ def load_model():
 # Función principal de la aplicación Streamlit
 def main():
     st.title("Clasificación de la base de datos MNIST")
+
+    if st.checkbox("## Ver análisis del modelo"):
+        st.write("#### Análisis de hiperparámetros")
+        st.markdown("""XXXXX""")
+    
+    # Explicación breve
+    st.write("#### Imagen")
+   
     st.markdown("Sube una imagen para clasificar")
 
     # Subir archivo de imagen
