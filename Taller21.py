@@ -88,6 +88,7 @@ def main():
 
     # Checkbox para mostrar los hiperparámetros
     if st.checkbox("Mostrar hiperparámetros del modelo"):
+        st.write("#### Hiperparámetros del modelo")
         if st.session_state.model_params is not None:
             # Estilo HTML para controlar el ancho de las columnas
             st.markdown(
